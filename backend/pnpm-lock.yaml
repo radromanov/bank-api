@@ -11,6 +11,9 @@ importers:
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
+      env-var:
+        specifier: ^7.5.0
+        version: 7.5.0
       express:
         specifier: ^4.19.2
         version: 4.19.2
@@ -212,6 +215,10 @@ packages:
   encodeurl@1.0.2:
     resolution: {integrity: sha512-TPJXq8JqFaVYm2CWmPvnP2Iyo4ZSM7/QKcSmuMLDObfpH5fi7RUGmd/rTDf+rut/saiDiQEeVTNgAmJEdAOx0w==}
     engines: {node: '>= 0.8'}
+
+  env-var@7.5.0:
+    resolution: {integrity: sha512-mKZOzLRN0ETzau2W2QXefbFjo5EF4yWq28OyKb9ICdeNhHJlOE/pHHnz4hdYJ9cNZXcJHo5xN4OT4pzuSHSNvA==}
+    engines: {node: '>=10'}
 
   es-define-property@1.0.0:
     resolution: {integrity: sha512-jxayLKShrEqqzJ0eumQbVhTYQM27CfT1T35+gCgDFoL82JLsXqTJ76zv6A0YLOgEnLUMvLzsDsGIrl8NFpT2gQ==}
@@ -753,6 +760,8 @@ snapshots:
   ee-first@1.1.1: {}
 
   encodeurl@1.0.2: {}
+
+  env-var@7.5.0: {}
 
   es-define-property@1.0.0:
     dependencies:
