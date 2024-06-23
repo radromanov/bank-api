@@ -4,7 +4,10 @@
   "description": "Bank API CRUD application implementing Hexagonal Architecture.",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --clear index.ts"
+    "dev": "ts-node-dev --respawn --clear index.ts",
+    "docker:up": "sudo docker-compose up -d",
+    "docker:down": "sudo docker-compose down",
+    "docker:ps": "sudo docker-compose ps -a"
   },
   "author": {
     "name": "Radostin Romanov",
