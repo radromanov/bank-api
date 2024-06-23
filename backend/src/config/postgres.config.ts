@@ -1,4 +1,4 @@
-import "../lib/utils/dotenv";
+import "../utils/dotenv";
 import { get } from "env-var";
 
 export class PostgresConfig {

@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "0.0.1",
-  "description": "Bank API CRUD application implementing Hexagonal Architecture.",
+  "description": "Bank API CRUD application implementing DDD.",
   "main": "src/main.ts",
   "scripts": {
     "dev": "ts-node-dev --respawn --clear src/main.ts",
