@@ -5,6 +5,6 @@ const app = express();
 
 const { port, env } = BankApiConfig.get();
 
-app.listen(port, () =>
-  console.log(`Server running on port ${port} in ${env} mode.`)
-);
+app.listen(port, () => {
+  console.log(`Server running on port ${port} in ${env} mode.`);
+});
