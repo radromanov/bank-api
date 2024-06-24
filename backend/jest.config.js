@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 const { defaults: tsjPreset } = require("ts-jest/presets");
 
 /** @type {import('jest').Config} */
@@ -10,6 +8,7 @@ const config = {
   transform: {
     ...tsjPreset.transform,
   },
+  preset: "@shelf/jest-postgres",
   moduleNameMapper: {
     "@domain/(.*)": "<rootDir>/src/domain/$1",
     "@api/(.*)": "<rootDir>/src/api/$1",
