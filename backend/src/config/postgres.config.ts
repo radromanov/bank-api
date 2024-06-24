@@ -4,12 +4,12 @@ import { get } from "env-var";
 export class PostgresConfig {
   private static init() {
     return {
-      user: get("POSTGRES_USER").required().asString(),
-      password: get("POSTGRES_PASSWORD").required().asString(),
-      host: get("POSTGRES_HOST").required().asString(),
-      port: get("POSTGRES_PORT").required().asPortNumber(),
-      database: get("POSTGRES_DB").required().asString(),
-      url: get("POSTGRES_URL").required().asString(),
+      user: get("DB_USER").required().asString(),
+      password: get("DB_PASSWORD").required().asString(),
+      host: get("DB_HOST").required().asString(),
+      port: get("DB_PORT").required().asPortNumber(),
+      database: get("DB_NAME").required().asString(),
+      url: get("DB_URL").required().asString(),
     };
   }
 

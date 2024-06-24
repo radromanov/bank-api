@@ -25,5 +25,5 @@ export const usersTable = pgTable(
   (t) => ({
     idIdx: uniqueIndex("unique_user_id").on(t.id),
     emailIdx: uniqueIndex("unique_user_email").on(t.email),
-  }),
+  })
 );

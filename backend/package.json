@@ -13,7 +13,7 @@
     "test:ci": "pnpm test --coverage",
     "db:push": "drizzle-kit push",
     "db:view": "drizzle-kit studio",
-    "db:seed": "ts-node-dev -r tsconfig-paths/register ./src/infrastructure/database/seed.ts"
+    "db:seed": "ts-node-dev -r tsconfig-paths/register ./src/infrastructure/database/postgres/orms/drizzle/seed.ts"
   },
   "author": {
     "name": "Radostin Romanov",
