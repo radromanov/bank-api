@@ -18,13 +18,12 @@
 
     "baseUrl": "./src",
     "paths": {
-      "@domain/*": ["./domain/*"],
-      "@api/*": ["./api/*"],
       "@application/*": ["./application/*"],
-      "@infrastructure/*": ["./infrastructure/*"],
-      "@shared/*": ["./shared/*"],
       "@config/*": ["./config/*"],
-      "@main/*": ["./main/*"],
+      "@domain/*": ["./domain/*"],
+      "@infrastructure/*": ["./infrastructure/*"],
+      "@presentation/*": ["./presentation/*"],
+      "@shared/*": ["./shared/*"],
       "@tests/*": ["../tests/*"]
     },
     "rootDirs": ["src", "tests"],
