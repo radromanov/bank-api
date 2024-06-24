@@ -3,7 +3,10 @@ import "../utils/dotenv";
 export class ApiError extends Error {
   public trace: string | null;
 
-  private constructor(public status: number, public message: string) {
+  private constructor(
+    public status: number,
+    public message: string,
+  ) {
     super(message);
     Error.captureStackTrace(this, this.constructor);
     Object.setPrototypeOf(this, ApiError.prototype);
