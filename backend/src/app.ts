@@ -1,5 +1,5 @@
 import express from "express";
-import { BankApiConfig } from "@infrastructure/config/bank-api.config";
+import { BankApiConfig } from "config/bank-api.config";
 
 const app = express();
 

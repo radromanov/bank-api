@@ -1,4 +1,4 @@
-import { PostgresConfig } from "@infrastructure/config/postgres.config";
+import { PostgresConfig } from "config/postgres.config";
 import { defineConfig } from "drizzle-kit";
 
 export default defineConfig({

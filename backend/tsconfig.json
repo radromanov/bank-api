@@ -22,7 +22,8 @@
       "@api/*": ["./api/*"],
       "@application/*": ["./application/*"],
       "@infrastructure/*": ["./infrastructure/*"],
-      "@utils/*": ["./utils/*"],
+      "@shared/*": ["./shared/*"],
+      "@config/*": ["./config/*"],
       "@main/*": ["./main/*"],
       "@tests/*": ["../tests/*"]
     },

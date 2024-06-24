@@ -1,4 +1,4 @@
-import "../../utils/dotenv";
+import "@shared/utils/dotenv";
 import { get } from "env-var";
 
 export class BankApiConfig {

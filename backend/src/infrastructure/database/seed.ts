@@ -2,7 +2,7 @@ import { InferInsertModel } from "drizzle-orm";
 import { db } from ".";
 import { usersTable } from "./schema";
 import { v7 as uuidv7 } from "uuid";
-import { createUserAvatar } from "@utils/createUserAvatar";
+import { createUserAvatar } from "@shared/utils/create-user-avatar";
 
 async function createUsers() {
   await db.delete(usersTable);
