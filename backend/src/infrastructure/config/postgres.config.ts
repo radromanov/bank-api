@@ -1,4 +1,4 @@
-import "../utils/dotenv";
+import "@utils/dotenv";
 import { get } from "env-var";
 
 export class PostgresConfig {
@@ -9,6 +9,7 @@ export class PostgresConfig {
       host: get("POSTGRES_HOST").required().asString(),
       port: get("POSTGRES_PORT").required().asPortNumber(),
       database: get("POSTGRES_DB").required().asString(),
+      url: get("POSTGRES_URL").required().asString(),
     };
   }
 

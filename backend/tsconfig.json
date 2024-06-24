@@ -14,15 +14,16 @@
     "noImplicitReturns": true,
 
     "incremental": true,
+    "outDir": "dist",
 
     "baseUrl": "./src",
     "paths": {
-      "@domain/*": ["domain/*"],
-      "@api/*": ["api/*"],
-      "@application/*": ["application/*"],
-      "@infrastructure/*": ["infrastructure/*"],
-      "@utils/*": ["utils/*"],
-      "@main/*": ["main/*"],
+      "@domain/*": ["./domain/*"],
+      "@api/*": ["./api/*"],
+      "@application/*": ["./application/*"],
+      "@infrastructure/*": ["./infrastructure/*"],
+      "@utils/*": ["./utils/*"],
+      "@main/*": ["./main/*"],
       "@tests/*": ["../tests/*"]
     },
     "rootDirs": ["src", "tests"],
@@ -31,6 +32,6 @@
     "skipLibCheck": true,
     "moduleResolution": "node16"
   },
-  "include": ["src", "tests"],
+  "include": ["src", "tests", "drizzle.config.ts"],
   "exclude": []
 }
