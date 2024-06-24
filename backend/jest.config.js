@@ -1,8 +1,15 @@
+/* eslint-disable */
+
+const { defaults: tsjPreset } = require("ts-jest/presets");
+
 /** @type {import('jest').Config} */
 const config = {
   collectCoverageFrom: ["<rootDir>/src/**/*.ts", "!<rootDir>/src/main/**/*.ts"],
   coverageDirectory: "coverage",
   coverageProvider: "v8",
+  transform: {
+    ...tsjPreset.transform,
+  },
   moduleNameMapper: {
     "@domain/(.*)": "<rootDir>/src/domain/$1",
     "@api/(.*)": "<rootDir>/src/api/$1",
