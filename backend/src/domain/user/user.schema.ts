@@ -30,3 +30,5 @@ export const NewUserSchema = z.object({
   firstName: notNullStr("First name", 1, 255),
   lastName: notNullStr("Last name", 1, 255),
 });
+
+export const LoginUserSchema = z.object({ email });

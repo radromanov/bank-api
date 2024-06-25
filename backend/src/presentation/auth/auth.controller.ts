@@ -27,6 +27,8 @@ export class AuthController {
     }
   };
 
+  handleLogin = async (_req: Request, _res: Response) => {};
+
   private handleFindOneById = async (req: Request, res: Response) => {
     const validId = id().safeParse(req.query.id);
 
