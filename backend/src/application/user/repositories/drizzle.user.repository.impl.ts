@@ -26,6 +26,10 @@ export class DrizzleUserRepositoryImpl implements UserRepository {
         .where(eq(usersTable.id, id))
         .then((result) => result[0]);
 
+      if (!result) {
+        return null;
+      }
+
       const user = UserSchema.safeParse(result);
       if (!user.success) {
         throw ApiError.UNPROCESSABLE_ENTITY(
@@ -50,6 +54,10 @@ export class DrizzleUserRepositoryImpl implements UserRepository {
         .from(usersTable)
         .where(eq(usersTable.email, email))
         .then((result) => result[0]);
+
+      if (!result) {
+        return null;
+      }
 
       const user = UserSchema.safeParse(result);
       if (!user.success) {

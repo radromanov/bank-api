@@ -11,6 +11,7 @@ export class AuthRoutes {
 
   init() {
     this.router.post("/register", catcher(this.authController.handleRegister));
+    this.router.get("/", catcher(this.authController.handleFindOne));
 
     return this.router;
   }

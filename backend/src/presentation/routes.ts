@@ -9,6 +9,7 @@ import { DrizzleClient, Postgres } from "@infrastructure/database";
 
 import {
   DrizzleUserRepositoryImpl,
+  FindUserUseCase,
   NewUserUseCase,
   UserServiceImpl,
 } from "@application/user";
@@ -34,7 +35,8 @@ export class AppRoutes {
     const userRepository = new DrizzleUserRepositoryImpl(drizzleClient);
     const userService = new UserServiceImpl(userRepository);
     const newUserUseCase = new NewUserUseCase(userService);
-    const authController = new AuthController(newUserUseCase);
+    const findUserUseCase = new FindUserUseCase(userService);
+    const authController = new AuthController(newUserUseCase, findUserUseCase);
     const authRoutes = new AuthRoutes(authController);
 
     return authRoutes.init();
