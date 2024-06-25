@@ -4,13 +4,13 @@ import { ApiError } from "@shared/utils/api-error";
 export class LoginDTO {
   private constructor(public email: string) {}
 
-  create = (payload: { [key: string]: unknown }) => {
-    const { email } = this.parse(payload);
+  static create(payload: { [key: string]: unknown }) {
+    const { email } = LoginDTO.parse(payload);
 
     return new LoginDTO(email);
-  };
+  }
 
-  private parse = (payload: unknown) => {
+  private static parse(payload: unknown) {
     const valid = LoginSchema.safeParse(payload);
 
     if (!valid.success) {
@@ -20,5 +20,5 @@ export class LoginDTO {
     }
 
     return valid.data;
-  };
+  }
 }

@@ -2,11 +2,13 @@ import { Request, Response } from "express";
 import { FindUserUseCase, NewUserDTO, NewUserUseCase } from "@application/user";
 import { ApiError } from "@shared/utils/api-error";
 import { email, id } from "@shared/utils/zod";
+import { LoginDTO, LoginUseCase } from "@application/auth";
 
 export class AuthController {
   constructor(
     private readonly newUser: NewUserUseCase,
-    private readonly findUser: FindUserUseCase
+    private readonly findUser: FindUserUseCase,
+    private readonly loginUser: LoginUseCase
   ) {}
 
   handleRegister = async (req: Request, res: Response) => {
@@ -27,7 +29,20 @@ export class AuthController {
     }
   };
 
-  handleLogin = async (_req: Request, _res: Response) => {};
+  handleLogin = async (req: Request, res: Response) => {
+    const dto = LoginDTO.create(req.body);
+    const { accessToken, refreshToken } = await this.loginUser.execute(dto);
+
+    res
+      .status(200)
+      .cookie("refresh_token", refreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        maxAge: 604800, // 7 days
+      })
+      .send({ accessToken });
+  };
 
   private handleFindOneById = async (req: Request, res: Response) => {
     const validId = id().safeParse(req.query.id);

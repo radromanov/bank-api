@@ -13,6 +13,7 @@ import {
   NewUserUseCase,
   UserServiceImpl,
 } from "@application/user";
+import { AuthServiceImpl, LoginUseCase } from "@application/auth";
 
 export class AppRoutes {
   private routes: Router;
@@ -33,10 +34,19 @@ export class AppRoutes {
     const sql = new Postgres(PostgresConfig).sql;
     const drizzleClient = new DrizzleClient(sql).client;
     const userRepository = new DrizzleUserRepositoryImpl(drizzleClient);
+
     const userService = new UserServiceImpl(userRepository);
     const newUserUseCase = new NewUserUseCase(userService);
     const findUserUseCase = new FindUserUseCase(userService);
-    const authController = new AuthController(newUserUseCase, findUserUseCase);
+
+    const authService = new AuthServiceImpl(findUserUseCase);
+    const loginUseCase = new LoginUseCase(authService);
+
+    const authController = new AuthController(
+      newUserUseCase,
+      findUserUseCase,
+      loginUseCase
+    );
     const authRoutes = new AuthRoutes(authController);
 
     return authRoutes.init();
