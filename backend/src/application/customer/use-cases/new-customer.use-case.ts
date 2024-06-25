@@ -12,7 +12,7 @@ export class NewCustomerUseCase {
       if (error instanceof ApiError) {
         throw error;
       }
-      throw new Error("Unexpected error occurred");
+      throw ApiError.INTERNAL_SERVER_ERROR();
     }
   }
 }
