@@ -5,11 +5,10 @@ import { createUserAvatar } from "@shared/utils/create-user-avatar";
 import { Postgres } from "../../postgres";
 import { PostgresConfig } from "@config/postgres.config";
 import { DrizzleClient } from "./drizzle-client";
-import { PostgresJsDatabase } from "drizzle-orm/postgres-js";
-import * as schema from "./schema";
+import { DatabaseClient } from "@infrastructure/database/database-client";
 
-async function createUsers(db: PostgresJsDatabase<typeof schema>) {
-  await db.delete(usersTable);
+async function createUsers(db: DatabaseClient) {
+  await db.dropTable(usersTable);
 
   const users: InferInsertModel<typeof usersTable>[] = [
     {
@@ -38,12 +37,12 @@ async function createUsers(db: PostgresJsDatabase<typeof schema>) {
     },
   ];
 
-  await db.insert(usersTable).values(users);
+  await db.create(users, usersTable);
 }
 
 async function seed() {
   const sql = new Postgres(PostgresConfig).sql;
-  const db = new DrizzleClient(sql).client;
+  const db = new DrizzleClient(sql);
 
   await createUsers(db);
 }

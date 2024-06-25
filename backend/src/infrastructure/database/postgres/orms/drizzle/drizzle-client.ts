@@ -3,24 +3,8 @@ import { DatabaseClient } from "@infrastructure/database/database-client";
 import { PostgresJsDatabase, drizzle } from "drizzle-orm/postgres-js";
 import * as schema from "./schema";
 import { eq } from "drizzle-orm";
-import { PgTable, PgTableWithColumns } from "drizzle-orm/pg-core";
-import { PgColumn } from "drizzle-orm/pg-core";
-
-interface PgTableWithIdColumn
-  extends PgTableWithColumns<{
-    name: string;
-    schema: undefined;
-    dialect: "pg";
-    columns: { id: PgColumn };
-  }> {}
-
-interface PgTableWithEmailColumn
-  extends PgTableWithColumns<{
-    name: string;
-    schema: undefined;
-    dialect: "pg";
-    columns: { email: PgColumn };
-  }> {}
+import { PgTable } from "drizzle-orm/pg-core";
+import { PgTableWithEmailColumn, PgTableWithIdColumn } from "./drizzle.types";
 
 export class DrizzleClient implements DatabaseClient {
   private _client: PostgresJsDatabase<typeof schema>;
@@ -51,8 +35,12 @@ export class DrizzleClient implements DatabaseClient {
       .then((result) => result[0])) as R;
   }
 
-  async createOne<T extends PgTable>(payload: any, table: T): Promise<void> {
+  async create<T extends PgTable>(payload: any, table: T): Promise<void> {
     await this.client.insert(table).values(payload);
+  }
+
+  async dropTable<T extends PgTable>(table: T): Promise<void> {
+    await this.client.delete(table);
   }
 
   get client() {
