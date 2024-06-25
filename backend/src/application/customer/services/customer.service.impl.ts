@@ -19,12 +19,7 @@ export class CustomerServiceImpl implements CustomerService {
       dto.email,
       dto.firstName,
       dto.lastName,
-      dto.image,
-      dto.roles,
-      dto.isVerified,
-      dto.isSuspended,
-      dto.createdAt,
-      dto.updatedAt
+      dto.image
     );
 
     await this.customerRepository.save(customer);

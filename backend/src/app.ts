@@ -1,10 +1,9 @@
 import express from "express";
-import { BankApiConfig } from "config/bank-api.config";
+import { Server } from "@presentation/server";
 
 const app = express();
 
-const { port, env } = BankApiConfig.get();
+const server = new Server(app);
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port} in ${env} mode.`);
-});
+server.routes();
+server.listen();

@@ -1,24 +1,27 @@
 import { Customer } from "@domain/customer/customer.entity";
 import { CustomerRepository } from "@domain/customer/customer.repository";
-import { DrizzleClient } from "@infrastructure/database/postgres/orms/drizzle/drizzle-client";
 import { usersTable } from "@infrastructure/database/postgres/orms/drizzle/schema";
 import { eq } from "drizzle-orm";
 import { ApiError } from "@shared/utils/api-error";
 import { CustomerSchema } from "@domain/customer/customer.schema";
+import { PostgresJsDatabase } from "drizzle-orm/postgres-js";
+import * as schema from "@infrastructure/database/postgres/orms/drizzle/schema";
 
 export class DrizzleCustomerRepositoryImpl implements CustomerRepository {
-  constructor(private readonly drizzleClient: DrizzleClient) {}
+  constructor(
+    private readonly drizzleClient: PostgresJsDatabase<typeof schema>
+  ) {}
 
   async save(customer: Customer): Promise<void> {
     try {
-      await this.drizzleClient.client.insert(usersTable).values(customer);
+      await this.drizzleClient.insert(usersTable).values(customer);
     } catch (error) {
       console.log(error);
     }
   }
   async findById(id: string): Promise<Customer | null> {
     try {
-      const result = await this.drizzleClient.client
+      const result = await this.drizzleClient
         .select()
         .from(usersTable)
         .where(eq(usersTable.id, id))
@@ -43,7 +46,7 @@ export class DrizzleCustomerRepositoryImpl implements CustomerRepository {
 
   async findByEmail(email: string): Promise<Customer | null> {
     try {
-      const result = await this.drizzleClient.client
+      const result = await this.drizzleClient
         .select()
         .from(usersTable)
         .where(eq(usersTable.email, email))
