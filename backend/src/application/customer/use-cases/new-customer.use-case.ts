@@ -5,7 +5,7 @@ import { ApiError } from "@shared/utils/api-error";
 export class NewCustomerUseCase {
   constructor(private readonly customerService: CustomerService) {}
 
-  async execute(dto: NewCustomerDTO): Promise<void> {
+  async createOne(dto: NewCustomerDTO): Promise<void> {
     try {
       await this.customerService.createCustomer(dto);
     } catch (error) {

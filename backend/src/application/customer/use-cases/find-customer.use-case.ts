@@ -1,20 +1,37 @@
+import { Customer } from "@domain/customer/customer.entity";
 import { CustomerService } from "@domain/customer/customer.service";
 import { ApiError } from "@shared/utils/api-error";
 
 export class FindCustomerUseCase {
   constructor(private readonly customerService: CustomerService) {}
 
-  async execute(payload: { email: string } | { id: string }) {
+  async findById(id: string): Promise<Customer> {
     try {
-      if ("email" in payload) {
-        await this.customerService.getCustomerByEmail(payload.email);
-      } else if ("id" in payload) {
-        await this.customerService.getCustomerByEmail(payload.id);
+      const customer = await this.customerService.getCustomerById(id);
+
+      if (!customer) {
+        throw ApiError.NOT_FOUND(`Customer with ID ${id} not found`);
       }
 
-      throw ApiError.BAD_REQUEST(
-        "'email' or 'id' properties are required to find customer"
-      );
+      return customer;
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw error;
+      }
+
+      throw ApiError.INTERNAL_SERVER_ERROR();
+    }
+  }
+
+  async findByEmail(email: string): Promise<Customer> {
+    try {
+      const customer = await this.customerService.getCustomerByEmail(email);
+
+      if (!customer) {
+        throw ApiError.NOT_FOUND(`Customer with email ${email} not found`);
+      }
+
+      return customer;
     } catch (error) {
       if (error instanceof ApiError) {
         throw error;
