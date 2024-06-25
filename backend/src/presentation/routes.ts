@@ -1,4 +1,6 @@
 import { Router } from "express";
+
+import { AuthController } from "./auth/auth.controller";
 import { AuthRoutes } from "./auth/auth.routes";
 
 import { PostgresConfig } from "@config/postgres.config";
@@ -32,7 +34,8 @@ export class AppRoutes {
     const userRepository = new DrizzleUserRepositoryImpl(drizzleClient);
     const userService = new UserServiceImpl(userRepository);
     const newUserUseCase = new NewUserUseCase(userService);
-    const authRoutes = new AuthRoutes(newUserUseCase);
+    const authController = new AuthController(newUserUseCase);
+    const authRoutes = new AuthRoutes(authController);
 
     return authRoutes.init();
   }
