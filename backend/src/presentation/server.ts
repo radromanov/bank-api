@@ -1,4 +1,6 @@
 import express, { Express } from "express";
+import cookieParser from "cookie-parser";
+
 import { BankApiConfig } from "@config/bank-api.config";
 import { AppRoutes } from "./routes";
 import { globalError } from "./global-error";
@@ -9,6 +11,8 @@ export class Server {
   private setup() {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
+
+    this.app.use(cookieParser());
   }
 
   routes() {

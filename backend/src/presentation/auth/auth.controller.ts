@@ -3,6 +3,7 @@ import { FindUserUseCase, NewUserDTO, NewUserUseCase } from "@application/user";
 import { ApiError } from "@shared/utils/api-error";
 import { email, id } from "@shared/utils/zod";
 import { LoginDTO, LoginUseCase } from "@application/auth";
+import { BankApiConfig } from "@config/bank-api.config";
 
 export class AuthController {
   constructor(
@@ -33,11 +34,13 @@ export class AuthController {
     const dto = LoginDTO.create(req.body);
     const { accessToken, refreshToken } = await this.loginUser.execute(dto);
 
+    const env = BankApiConfig.getOne("env");
+
     res
       .status(200)
       .cookie("refresh_token", refreshToken, {
         httpOnly: true,
-        secure: true,
+        secure: env === "production" ? true : false, // Allows for easier testing in Postman
         sameSite: "strict",
         maxAge: 604800, // 7 days
       })
