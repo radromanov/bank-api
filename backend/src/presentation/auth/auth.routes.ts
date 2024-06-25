@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { AuthController } from "./auth.controller";
+import { catcher } from "@shared/utils/catcher";
 
 export class AuthRoutes {
   private router: Router;
@@ -9,7 +10,7 @@ export class AuthRoutes {
   }
 
   init() {
-    this.router.post("/register", this.authController.handleRegister);
+    this.router.post("/register", catcher(this.authController.handleRegister));
 
     return this.router;
   }

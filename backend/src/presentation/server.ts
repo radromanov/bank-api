@@ -1,6 +1,7 @@
 import express, { Express } from "express";
 import { BankApiConfig } from "@config/bank-api.config";
 import { AppRoutes } from "./routes";
+import { globalError } from "./global-error";
 
 export class Server {
   constructor(private readonly app: Express) {}
@@ -16,6 +17,7 @@ export class Server {
     const router = new AppRoutes().init();
 
     this.app.use("/api/v1", router);
+    this.app.use(globalError);
 
     return this.app;
   }
