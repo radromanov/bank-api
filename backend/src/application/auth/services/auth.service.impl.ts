@@ -1,10 +1,5 @@
 import { FindUserUseCase } from "@application/user";
-
-export interface AuthService {
-  login: (email: string) => Promise<string>;
-  generateToken: () => string;
-  verifyToken: () => void;
-}
+import { AuthService } from "@domain/auth";
 
 export class AuthServiceImpl implements AuthService {
   constructor(private readonly findUserUseCase: FindUserUseCase) {}
