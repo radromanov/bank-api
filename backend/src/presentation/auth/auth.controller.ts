@@ -1,7 +1,6 @@
-import { NewUserDTO } from "@application/user/dtos/new-user.dto";
-import { NewUserUseCase } from "@application/user/use-cases/new-user.use-case";
-import { ApiError } from "@shared/utils/api-error";
 import { Router } from "express";
+import { ApiError } from "@shared/utils/api-error";
+import { NewUserDTO, NewUserUseCase } from "@application/user";
 
 export class AuthController {
   private router: Router;
@@ -12,8 +11,6 @@ export class AuthController {
 
   init() {
     this.router.post("/register", async (req, res) => {
-      console.log("in here");
-
       const dto = NewUserDTO.create(req.body);
 
       try {

@@ -2,7 +2,7 @@
   "name": "backend",
   "version": "0.0.1",
   "description": "Bank API CRUD application implementing CA.",
-  "main": "src/main/server.ts",
+  "main": "src/app.ts",
   "scripts": {
     "dev": "pnpm docker:up && ts-node-dev -r tsconfig-paths/register src/app.ts",
     "docker:up": "sudo docker-compose up -d",

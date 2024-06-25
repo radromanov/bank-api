@@ -1,5 +1,5 @@
-import { NewUserDTO } from "@application/user/dtos/new-user.dto";
 import { User } from "./user.entity";
+import { NewUserDTO } from "@application/user";
 
 export interface UserService {
   createUser(dto: NewUserDTO): Promise<void>;
