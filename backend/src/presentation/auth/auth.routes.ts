@@ -2,7 +2,7 @@ import { Router } from "express";
 import { ApiError } from "@shared/utils/api-error";
 import { NewUserDTO, NewUserUseCase } from "@application/user";
 
-export class AuthController {
+export class AuthRoutes {
   private router: Router;
 
   constructor(private readonly newCustomer: NewUserUseCase) {
