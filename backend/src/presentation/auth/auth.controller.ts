@@ -1,12 +1,12 @@
-import { NewCustomerDTO } from "@application/customer/dtos/new-customer.dto";
-import { NewCustomerUseCase } from "@application/customer/use-cases/new-customer.use-case";
+import { NewUserDTO } from "@application/user/dtos/new-user.dto";
+import { NewUserUseCase } from "@application/user/use-cases/new-user.use-case";
 import { ApiError } from "@shared/utils/api-error";
 import { Router } from "express";
 
 export class AuthController {
   private router: Router;
 
-  constructor(private readonly newCustomer: NewCustomerUseCase) {
+  constructor(private readonly newCustomer: NewUserUseCase) {
     this.router = Router();
   }
 
@@ -14,7 +14,7 @@ export class AuthController {
     this.router.post("/register", async (req, res) => {
       console.log("in here");
 
-      const dto = NewCustomerDTO.create(req.body);
+      const dto = NewUserDTO.create(req.body);
 
       try {
         await this.newCustomer.createOne(dto);

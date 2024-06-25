@@ -9,7 +9,7 @@ import {
 } from "@shared/utils/zod";
 import z from "zod";
 
-export const CustomerSchema = z.object({
+export const UserSchema = z.object({
   id: id(),
   email,
   firstName: notNullStr("firstName", 1, 255),
@@ -25,7 +25,7 @@ export const CustomerSchema = z.object({
   updatedAt: date("updatedAt"),
 });
 
-export const NewCustomerSchema = z.object({
+export const NewUserSchema = z.object({
   email,
   firstName: notNullStr("First name", 1, 255),
   lastName: notNullStr("Last name", 1, 255),

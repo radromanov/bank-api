@@ -1,9 +1,9 @@
 import { v7 as uuidv7 } from "uuid";
 import { ApiError } from "@shared/utils/api-error";
-import { NewCustomerSchema } from "@domain/customer/customer.schema";
 import { createUserAvatar } from "@shared/utils/create-user-avatar";
+import { NewUserSchema } from "@domain/user/user.schema";
 
-export class NewCustomerDTO {
+export class NewUserDTO {
   private constructor(
     public id: string,
     public email: string,
@@ -13,20 +13,20 @@ export class NewCustomerDTO {
   ) {}
 
   static create(payload: { [key: string]: unknown }) {
-    const { email, firstName, lastName } = NewCustomerDTO.parse(payload);
+    const { email, firstName, lastName } = NewUserDTO.parse(payload);
 
     const id = uuidv7();
     const image = createUserAvatar(firstName, lastName);
 
-    return new NewCustomerDTO(id, email, firstName, lastName, image);
+    return new NewUserDTO(id, email, firstName, lastName, image);
   }
 
   private static parse(payload: unknown) {
-    const parsed = NewCustomerSchema.safeParse(payload);
+    const parsed = NewUserSchema.safeParse(payload);
 
     if (!parsed.success) {
       throw ApiError.UNPROCESSABLE_ENTITY(
-        parsed.error.errors[0].message || "Invalid new customer payload in DTO"
+        parsed.error.errors[0].message || "Invalid new user payload in DTO"
       );
     }
 

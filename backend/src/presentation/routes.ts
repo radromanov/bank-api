@@ -1,11 +1,11 @@
 import { Router } from "express";
 import { AuthController } from "./auth/auth.controller";
-import { NewCustomerUseCase } from "@application/customer/use-cases/new-customer.use-case";
-import { CustomerServiceImpl } from "@application/customer/services/customer.service.impl";
-import { DrizzleCustomerRepositoryImpl } from "@application/customer/repositories/drizzle.customer.repository.impl";
 import { DrizzleClient } from "@infrastructure/database/postgres/orms/drizzle/drizzle-client";
 import { Postgres } from "@infrastructure/database/postgres/postgres";
 import { PostgresConfig } from "@config/postgres.config";
+import { DrizzleUserRepositoryImpl } from "@application/user/repositories/drizzle.user.repository.impl";
+import { UserServiceImpl } from "@application/user/services/user.service.impl";
+import { NewUserUseCase } from "@application/user/use-cases/new-user.use-case";
 
 export class AppRoutes {
   private routes: Router;
@@ -25,10 +25,10 @@ export class AppRoutes {
   private authRoutes() {
     const sql = new Postgres(PostgresConfig).sql;
     const drizzleClient = new DrizzleClient(sql).client;
-    const customerRepository = new DrizzleCustomerRepositoryImpl(drizzleClient);
-    const customerService = new CustomerServiceImpl(customerRepository);
-    const newCustomerUseCase = new NewCustomerUseCase(customerService);
-    const authRoutes = new AuthController(newCustomerUseCase);
+    const userRepository = new DrizzleUserRepositoryImpl(drizzleClient);
+    const userService = new UserServiceImpl(userRepository);
+    const newUserUseCase = new NewUserUseCase(userService);
+    const authRoutes = new AuthController(newUserUseCase);
 
     return authRoutes.init();
   }

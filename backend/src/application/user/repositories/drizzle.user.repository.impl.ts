@@ -1,25 +1,23 @@
-import { Customer } from "@domain/customer/customer.entity";
-import { CustomerRepository } from "@domain/customer/customer.repository";
-import { usersTable } from "@infrastructure/database/postgres/orms/drizzle/schema";
 import { eq } from "drizzle-orm";
-import { ApiError } from "@shared/utils/api-error";
-import { CustomerSchema } from "@domain/customer/customer.schema";
 import { PostgresJsDatabase } from "drizzle-orm/postgres-js";
+import { usersTable } from "@infrastructure/database/postgres/orms/drizzle/schema";
+import { ApiError } from "@shared/utils/api-error";
 import * as schema from "@infrastructure/database/postgres/orms/drizzle/schema";
+import { User, UserRepository, UserSchema } from "@domain/user";
 
-export class DrizzleCustomerRepositoryImpl implements CustomerRepository {
+export class DrizzleUserRepositoryImpl implements UserRepository {
   constructor(
     private readonly drizzleClient: PostgresJsDatabase<typeof schema>
   ) {}
 
-  async save(customer: Customer): Promise<void> {
+  async save(user: User): Promise<void> {
     try {
-      await this.drizzleClient.insert(usersTable).values(customer);
+      await this.drizzleClient.insert(usersTable).values(user);
     } catch (error) {
       console.log(error);
     }
   }
-  async findById(id: string): Promise<Customer | null> {
+  async findById(id: string): Promise<User | null> {
     try {
       const result = await this.drizzleClient
         .select()
@@ -27,14 +25,14 @@ export class DrizzleCustomerRepositoryImpl implements CustomerRepository {
         .where(eq(usersTable.id, id))
         .then((result) => result[0]);
 
-      const customer = CustomerSchema.safeParse(result);
-      if (!customer.success) {
+      const user = UserSchema.safeParse(result);
+      if (!user.success) {
         throw ApiError.UNPROCESSABLE_ENTITY(
-          customer.error.errors[0].message || "Invalid customer result"
+          user.error.errors[0].message || "Invalid customer result"
         );
       }
 
-      return customer.data;
+      return user.data;
     } catch (error) {
       if (error instanceof ApiError) {
         console.log(error.message);
@@ -44,7 +42,7 @@ export class DrizzleCustomerRepositoryImpl implements CustomerRepository {
     }
   }
 
-  async findByEmail(email: string): Promise<Customer | null> {
+  async findByEmail(email: string): Promise<User | null> {
     try {
       const result = await this.drizzleClient
         .select()
@@ -52,13 +50,13 @@ export class DrizzleCustomerRepositoryImpl implements CustomerRepository {
         .where(eq(usersTable.email, email))
         .then((result) => result[0]);
 
-      const customer = CustomerSchema.safeParse(result);
-      if (!customer.success) {
+      const user = UserSchema.safeParse(result);
+      if (!user.success) {
         throw ApiError.UNPROCESSABLE_ENTITY(
-          customer.error.errors[0].message || "Invalid customer result"
+          user.error.errors[0].message || "Invalid customer result"
         );
       }
-      return customer.data;
+      return user.data;
     } catch (error) {
       if (error instanceof ApiError) {
         console.log(error.message);
