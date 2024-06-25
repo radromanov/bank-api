@@ -1,31 +1,18 @@
-import { CustomerRepository } from "@domain/customer/customer.repository";
+import { CustomerService } from "@domain/customer/customer.service";
 import { NewCustomerDTO } from "../dtos/new-customer.dto";
-import { Customer } from "@domain/customer/customer.entity";
 import { ApiError } from "@shared/utils/api-error";
 
 export class NewCustomerUseCase {
-  constructor(private readonly customerRepository: CustomerRepository) {}
+  constructor(private readonly customerService: CustomerService) {}
 
-  async execute(dto: NewCustomerDTO) {
-    const exists = await this.customerRepository.findByEmail(dto.email);
-
-    if (exists) {
-      throw ApiError.CONFLICT(`User already exists`);
+  async execute(dto: NewCustomerDTO): Promise<void> {
+    try {
+      await this.customerService.createCustomer(dto);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw error;
+      }
+      throw new Error("Unexpected error occurred");
     }
-
-    const customer = new Customer(
-      dto.id,
-      dto.email,
-      dto.firstName,
-      dto.lastName,
-      dto.image,
-      dto.roles,
-      dto.isVerified,
-      dto.isSuspended,
-      dto.createdAt,
-      dto.updatedAt
-    );
-
-    await this.customerRepository.save(customer);
   }
 }

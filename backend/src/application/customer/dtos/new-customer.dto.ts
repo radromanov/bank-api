@@ -1,6 +1,6 @@
 import { v7 as uuidv7 } from "uuid";
 import { ApiError } from "@shared/utils/api-error";
-import { NewCustomerSchema } from "../schemas/new-customer.schema";
+import { NewCustomerSchema } from "@domain/customer/customer.schema";
 
 export class NewCustomerDTO {
   private constructor(

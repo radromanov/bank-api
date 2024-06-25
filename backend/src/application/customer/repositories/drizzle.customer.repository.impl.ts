@@ -3,8 +3,8 @@ import { CustomerRepository } from "@domain/customer/customer.repository";
 import { DrizzleClient } from "@infrastructure/database/postgres/orms/drizzle/drizzle-client";
 import { usersTable } from "@infrastructure/database/postgres/orms/drizzle/schema";
 import { eq } from "drizzle-orm";
-import { CustomerSchema } from "../schemas/customer.schema";
 import { ApiError } from "@shared/utils/api-error";
+import { CustomerSchema } from "@domain/customer/customer.schema";
 
 export class DrizzleCustomerRepositoryImpl implements CustomerRepository {
   constructor(private readonly drizzleClient: DrizzleClient) {}
