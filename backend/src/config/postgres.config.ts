@@ -1,5 +1,6 @@
 import "@shared/utils/dotenv";
 import { get } from "env-var";
+import z from "zod";
 
 export class PostgresConfig {
   private static init() {

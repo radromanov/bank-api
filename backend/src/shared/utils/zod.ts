@@ -1,8 +1,12 @@
 import z from "zod";
 
-const minMessage = (name: string, min: number) =>
+export const required = (name: string) => ({
+  required_error: `${name} is required`,
+});
+
+export const minimum = (name: string, min = 1) =>
   `${name} must contain at least ${min} character(s)`;
-const maxMessage = (name: string, max: number) =>
+export const maximum = (name: string, max: number) =>
   `${name} cannot contain more than ${max} character(s)`;
 const ID_LEN = 36;
 
@@ -21,10 +25,10 @@ export const notNullStr = (name: string, min: number = 1, max?: number) => {
       required_error: `${name} is required`,
       invalid_type_error: `${name} must be of type 'string'`,
     })
-    .min(min, minMessage(name, min));
+    .min(min, minimum(name, min));
 
   if (max) {
-    builder.max(max, maxMessage(name, max));
+    builder.max(max, maximum(name, max));
   }
 
   return builder;
@@ -59,8 +63,8 @@ export const id = () =>
       required_error: "ID is required",
       invalid_type_error: "ID must be of type 'string'",
     })
-    .min(ID_LEN, minMessage("id", ID_LEN))
-    .max(ID_LEN, maxMessage("id", ID_LEN));
+    .min(ID_LEN, minimum("id", ID_LEN))
+    .max(ID_LEN, maximum("id", ID_LEN));
 
 export const date = (name: string) =>
   z.date({

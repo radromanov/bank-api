@@ -1,22 +1,19 @@
 import z, { ZodError } from "zod";
 import "@shared/utils/dotenv";
 import { ApiError } from "@shared/utils/api-error";
+import { minimum, required } from "@shared/utils/zod";
 
 export class BankApiConfig {
   private static schema = z.object({
     port: z
-      .string({
-        required_error: "process.env.BANK_API_PORT is required",
-      })
-      .min(1, "process.env.BANK_API_PORT must contain at least 1 character(s)")
+      .string(required("process.env.BANK_API_PORT"))
+      .min(1, minimum("process.env.BANK_API_PORT"))
       .transform((data) => parseInt(data, 10)),
     host: z
-      .string({
-        required_error: "process.env.BANK_API_HOST is required",
-      })
-      .min(1, "process.env.BANK_API_HOST must contain at least 1 character(s)"),
+      .string(required("process.env.BANK_API_HOST"))
+      .min(1, minimum("process.env.BANK_API_HOST")),
     env: z.enum(["development", "production", "staging", "testing"], {
-      required_error: "process.env.NODE_ENV is required",
+      ...required("process.env.NODE_ENV"),
       invalid_type_error:
         "Invalid process.env.NODE_ENV value. Expected 'development' | 'production' | 'staging' | 'testing'",
     }),
