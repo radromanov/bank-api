@@ -1,5 +1,5 @@
-import z, { ZodError } from "zod";
 import "@shared/utils/dotenv";
+import z, { ZodError } from "zod";
 import { ApiError } from "@shared/utils/api-error";
 import { minimum, required } from "@shared/utils/zod";
 
@@ -12,11 +12,10 @@ export class BankApiConfig {
     host: z
       .string(required("process.env.BANK_API_HOST"))
       .min(1, minimum("process.env.BANK_API_HOST")),
-    env: z.enum(["development", "production", "staging", "testing"], {
-      ...required("process.env.NODE_ENV"),
-      invalid_type_error:
-        "Invalid process.env.NODE_ENV value. Expected 'development' | 'production' | 'staging' | 'testing'",
-    }),
+    env: z.enum(
+      ["development", "production", "staging", "testing"],
+      required("process.env.NODE_ENV")
+    ),
   });
 
   private static init() {
