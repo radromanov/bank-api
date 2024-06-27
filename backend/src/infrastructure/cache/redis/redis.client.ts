@@ -79,7 +79,7 @@ export class RedisClient implements CacheClient {
   async set(key: string, data: unknown, expire: number = 900) {
     const exists = await this.get(key);
     if (exists) {
-      throw ApiError.CONFLICT(`Key ${key} is already cached`);
+      throw ApiError.CONFLICT(`Please check your email for more information`);
     }
 
     const value = typeof data === "string" ? data : JSON.stringify(data);

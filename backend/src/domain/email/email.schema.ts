@@ -1,5 +1,5 @@
-import { email, notNullStr } from "@shared/utils/zod";
 import z from "zod";
+import { email, notNullStr } from "@shared/utils";
 
 export const SendEmailSchema = z.object({
   sender: email("Sender Email"),

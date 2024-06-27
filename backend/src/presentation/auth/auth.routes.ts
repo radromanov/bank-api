@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { AuthController } from "./auth.controller";
-import { catcher } from "@shared/utils/catcher";
+import { catcher } from "@shared/utils";
 
 export class AuthRoutes {
   private router: Router;

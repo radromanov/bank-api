@@ -1,4 +1,4 @@
-import { ApiError } from "@shared/utils/api-error";
+import { ApiError } from "@shared/utils";
 import { Request, Response, NextFunction } from "express";
 
 export const globalError = (

@@ -1,10 +1,10 @@
 import { LoginSchema } from "@domain/auth";
-import { ApiError } from "@shared/utils/api-error";
+import { ApiError } from "@shared/utils";
 
 export class LoginDTO {
   private constructor(public email: string) {}
 
-  static create(payload: { [key: string]: unknown }) {
+  static create(payload: unknown) {
     const { email } = LoginDTO.parse(payload);
 
     return new LoginDTO(email);

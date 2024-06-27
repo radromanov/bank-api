@@ -1,16 +1,21 @@
 import { Request, Response } from "express";
-import { FindUserUseCase, NewUserDTO, NewUserUseCase } from "@application/user";
-import { ApiError } from "@shared/utils/api-error";
-import { email, id } from "@shared/utils/zod";
-import { LoginDTO, LoginUseCase } from "@application/auth";
+import {
+  ExistingUserUseCase,
+  FindUserUseCase,
+  NewUserDTO,
+  NewUserUseCase,
+} from "@application/user";
 import { BankApiConfig } from "@config/bank-api.config";
-import { CacheClient } from "@infrastructure/cache/cache.client";
-import { ExistingUserUseCase } from "@application/user/use-cases/existing-user.use-case";
+import { LoginDTO, LoginUseCase } from "@application/auth";
 import { SendEmailDTO, SendEmailUseCase } from "@application/email";
+import { CacheClient } from "@infrastructure/cache";
+import { ApiError, email, id } from "@shared/utils";
+import { VerifyDTO } from "@application/auth/dtos/verify.dto";
 
 interface Cached {
   otp: string;
   user: NewUserDTO;
+  type: "register" | "login";
 }
 
 export class AuthController {
@@ -31,7 +36,7 @@ export class AuthController {
 
     const key = this.cache.createKey(dto.email);
     const otp = this.cache.createOtp();
-    await this.cache.set(key, { otp, user: dto });
+    await this.cache.set(key, { otp, user: dto, type: "register" });
 
     const emailDto = SendEmailDTO.create({
       sender: "bank@api.com",
@@ -57,39 +62,64 @@ export class AuthController {
 
   handleLogin = async (req: Request, res: Response) => {
     const dto = LoginDTO.create(req.body);
-    const { accessToken, refreshToken } = await this.loginUser.execute(dto);
 
-    const env = BankApiConfig.getOne("env");
+    const isExists = await this.existingUser.execute(dto.email);
+    if (!isExists) throw ApiError.UNAUTHORIZED("Incorrect or invalid email");
 
-    res
-      .status(200)
-      .cookie("refresh_token", refreshToken, {
-        httpOnly: true,
-        secure: env === "production" ? true : false, // Allows for easier testing in Postman
-        sameSite: "strict",
-        maxAge: 604800, // 7 days
-      })
-      .send({ accessToken });
+    const key = this.cache.createKey(dto.email);
+    const otp = this.cache.createOtp();
+    await this.cache.set(key, { otp, user: dto, type: "login" });
+
+    const emailDto = SendEmailDTO.create({
+      sender: "bank@api.com",
+      recipient: dto.email,
+      subject: "Verify Your Account | Bank API",
+      body: `Your one-time password is ${otp}.`,
+    });
+
+    await this.sendEmail.execute(emailDto);
+
+    res.status(200).json(key);
   };
 
   handleVerify = async (
     req: Request<{}, {}, { otp: string | null; token: string | null }>,
     res: Response
   ) => {
-    const { otp, token } = req.body;
-    if (!otp || !token) {
-      throw ApiError.BAD_REQUEST("Missing or invalid verification payload");
-    }
+    const dto = VerifyDTO.create(req.body);
 
-    const cached = await this.cache.get<Cached>(token);
-    if (!cached || cached.otp !== otp) {
+    const cached = await this.cache.get<Cached>(dto.token);
+    if (!cached || cached.otp !== dto.otp) {
       throw ApiError.NOT_FOUND(); // Error is 404 (generic) in order to prevent narrowing
     }
 
-    await this.cache.del(token);
-    await this.newUser.createOne(cached.user);
+    await this.cache.del(dto.token);
 
-    res.sendStatus(201); // Created user
+    console.log(typeof cached.user);
+
+    if (cached.type === "register") {
+      await this.newUser.createOne(cached.user);
+      res.sendStatus(201); // Created user
+    } else if (cached.type === "login") {
+      const loginDto = LoginDTO.create(cached.user);
+      const { accessToken, refreshToken } = await this.loginUser.execute(
+        loginDto
+      );
+
+      const env = BankApiConfig.getOne("env");
+
+      res
+        .status(200)
+        .cookie("refresh_token", refreshToken, {
+          httpOnly: true,
+          secure: env === "production" ? true : false, // Allows for easier testing in Postman
+          sameSite: "strict",
+          maxAge: 604800, // 7 days
+        })
+        .send({ accessToken });
+    } else {
+      throw ApiError.BAD_REQUEST("Unable to verify");
+    }
   };
 
   private handleFindOneById = async (req: Request, res: Response) => {

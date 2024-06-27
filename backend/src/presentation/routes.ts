@@ -4,22 +4,22 @@ import { AuthController } from "./auth/auth.controller";
 import { AuthRoutes } from "./auth/auth.routes";
 
 import { PostgresConfig } from "@config/postgres.config";
+import { RedisConfig } from "@config/redis.config";
+import { NodemailerConfig } from "@config/nodemailer.config";
 
 import { DrizzleClient, Postgres } from "@infrastructure/database";
+import { RedisClient } from "@infrastructure/cache";
+import { NodemailerClient } from "@infrastructure/email";
 
 import {
   DrizzleUserRepositoryImpl,
+  ExistingUserUseCase,
   FindUserUseCase,
   NewUserUseCase,
   UserServiceImpl,
 } from "@application/user";
 import { AuthServiceImpl, LoginUseCase } from "@application/auth";
-import { RedisClient } from "@infrastructure/cache/redis/redis.client";
-import { RedisConfig } from "@config/redis.config";
-import { ExistingUserUseCase } from "@application/user/use-cases/existing-user.use-case";
 import { EmailServiceImpl, SendEmailUseCase } from "@application/email";
-import { NodemailerClient } from "@infrastructure/email";
-import { NodemailerConfig } from "@config/nodemailer.config";
 
 export class AppRoutes {
   private routes: Router;

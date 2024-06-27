@@ -6,7 +6,7 @@ import {
   id,
   notNullStr,
   url,
-} from "@shared/utils/zod";
+} from "@shared/utils";
 import z from "zod";
 
 export const UserSchema = z.object({

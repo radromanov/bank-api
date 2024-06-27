@@ -1,5 +1,5 @@
 import { User, UserService } from "@domain/user";
-import { ApiError } from "@shared/utils/api-error";
+import { ApiError } from "@shared/utils";
 
 export class FindUserUseCase {
   constructor(private readonly userService: UserService) {}
