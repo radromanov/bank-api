@@ -10,7 +10,7 @@ services:
     ports:
       - ${DB_PORT}:5432
     volumes:
-      - postgres_data:/var/lib/postgres/data
+      - ./.data/postgres:/var/lib/postgres/data
 
   bank-api_redis:
     container_name: bank-api_redis
@@ -22,8 +22,4 @@ services:
       - ${REDIS_PORT}:6379
       - ${REDIS_INSIGHT_PORT}:8001
     volumes:
-      - redis_data:/var/lib/redis/data
-
-volumes:
-  postgres_data:
-  redis_data:
+      - ./.data/redis:/var/lib/redis/data

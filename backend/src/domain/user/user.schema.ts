@@ -11,7 +11,7 @@ import z from "zod";
 
 export const UserSchema = z.object({
   id: id(),
-  email,
+  email: email("User email"),
   firstName: notNullStr("firstName", 1, 255),
   lastName: notNullStr("lastName", 1, 255),
   image: url("image"),
@@ -26,7 +26,7 @@ export const UserSchema = z.object({
 });
 
 export const NewUserSchema = z.object({
-  email,
+  email: email("New user email"),
   firstName: notNullStr("First name", 1, 255),
   lastName: notNullStr("Last name", 1, 255),
 });

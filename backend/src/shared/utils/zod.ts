@@ -21,10 +21,6 @@ const ID_LEN = 36;
 
 //
 
-export const email = z
-  .string(errors("Email"))
-  .email("Please enter a valid email");
-
 export const notNullStr = (name: string, min: number = 1, max?: number) => {
   let builder = z.string(errors(name)).min(min, minimum(name, min));
 
@@ -34,6 +30,9 @@ export const notNullStr = (name: string, min: number = 1, max?: number) => {
 
   return builder;
 };
+
+export const email = (name: string) =>
+  z.string(errors(name)).email("Please enter a valid email");
 
 export const url = (name: string) =>
   z.string(errors(name)).url(`${name} must be a valid url`);

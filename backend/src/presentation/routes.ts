@@ -17,6 +17,9 @@ import { AuthServiceImpl, LoginUseCase } from "@application/auth";
 import { RedisClient } from "@infrastructure/cache/redis/redis.client";
 import { RedisConfig } from "@config/redis.config";
 import { ExistingUserUseCase } from "@application/user/use-cases/existing-user.use-case";
+import { EmailServiceImpl, SendEmailUseCase } from "@application/email";
+import { NodemailerClient } from "@infrastructure/email";
+import { NodemailerConfig } from "@config/nodemailer.config";
 
 export class AppRoutes {
   private routes: Router;
@@ -43,6 +46,10 @@ export class AppRoutes {
     const findUserUseCase = new FindUserUseCase(userService);
     const existingUserUseCase = new ExistingUserUseCase(userService);
 
+    const emailClient = new NodemailerClient(NodemailerConfig);
+    const emailService = new EmailServiceImpl(emailClient);
+    const sendEmailUseCase = new SendEmailUseCase(emailService);
+
     const authService = new AuthServiceImpl(findUserUseCase);
     const loginUseCase = new LoginUseCase(authService);
 
@@ -53,7 +60,8 @@ export class AppRoutes {
       findUserUseCase,
       existingUserUseCase,
       loginUseCase,
-      redisCache
+      redisCache,
+      sendEmailUseCase
     );
     const authRoutes = new AuthRoutes(authController);
 

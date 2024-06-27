@@ -2,8 +2,8 @@ import { email, notNullStr } from "@shared/utils/zod";
 import z from "zod";
 
 export const SendEmailSchema = z.object({
-  sender: email,
-  recipient: email,
+  sender: email("Sender Email"),
+  recipient: email("Recipient email"),
   subject: notNullStr("subject"),
   body: notNullStr("body"),
 });

@@ -6,6 +6,7 @@ import { LoginDTO, LoginUseCase } from "@application/auth";
 import { BankApiConfig } from "@config/bank-api.config";
 import { CacheClient } from "@infrastructure/cache/cache.client";
 import { ExistingUserUseCase } from "@application/user/use-cases/existing-user.use-case";
+import { SendEmailDTO, SendEmailUseCase } from "@application/email";
 
 interface Cached {
   otp: string;
@@ -18,7 +19,8 @@ export class AuthController {
     private readonly findUser: FindUserUseCase,
     private readonly existingUser: ExistingUserUseCase,
     private readonly loginUser: LoginUseCase,
-    private readonly cache: CacheClient
+    private readonly cache: CacheClient,
+    private readonly sendEmail: SendEmailUseCase
   ) {}
 
   handleRegister = async (req: Request, res: Response) => {
@@ -30,6 +32,15 @@ export class AuthController {
     const key = this.cache.createKey(dto.email);
     const otp = this.cache.createOtp();
     await this.cache.set(key, { otp, user: dto });
+
+    const emailDto = SendEmailDTO.create({
+      sender: "bank@api.com",
+      recipient: dto.email,
+      subject: "Verify Your Account | Bank API",
+      body: `Your one-time password is ${otp}.`,
+    });
+
+    await this.sendEmail.execute(emailDto);
 
     res.status(200).json(key);
   };
@@ -95,7 +106,7 @@ export class AuthController {
   };
 
   private handleFindOneByEmail = async (req: Request, res: Response) => {
-    const validEmail = email.safeParse(req.query.email);
+    const validEmail = email("Email").safeParse(req.query.email);
 
     if (!validEmail.success) {
       throw ApiError.BAD_REQUEST(

@@ -5,6 +5,8 @@ export class SendEmailUseCase {
   constructor(private readonly emailService: EmailService) {}
 
   async execute(dto: SendEmailDTO) {
+    console.log(dto);
+
     return await this.emailService.send(dto);
   }
 }
