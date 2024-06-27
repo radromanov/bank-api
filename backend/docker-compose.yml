@@ -10,16 +10,19 @@ services:
     ports:
       - ${DB_PORT}:5432
     volumes:
-      - ${DB_DOCKER_VOLUME_PATH}:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
 
   bank-api_redis:
     container_name: bank-api_redis
-    image: redis:alpine
+    image: redis/redis-stack
     restart: always
+    env_file:
+      - .env
     ports:
       - ${REDIS_PORT}:6379
+      - ${REDIS_INSIGHT_PORT}:8001
     volumes:
-      - ${REDIS_DOCKER_VOLUME_PATH}:/var/lib/redis/data
+      - redis_data:/var/lib/redis/data
 
 volumes:
   postgres_data:
