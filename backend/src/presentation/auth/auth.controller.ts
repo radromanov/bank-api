@@ -17,11 +17,12 @@ export class AuthController {
   handleRegister = async (req: Request, res: Response) => {
     const dto = NewUserDTO.create(req.body);
 
-    await this.cache.set(dto.email, dto);
+    const key = this.cache.createKey(dto.email);
+    const otp = this.cache.createOtp();
+    await this.cache.set(key, { otp, user: dto });
 
     await this.newUser.createOne(dto);
-
-    res.status(201).json(dto);
+    res.status(201).json(key);
   };
 
   handleFindOne = async (req: Request, res: Response) => {
@@ -49,6 +50,16 @@ export class AuthController {
         maxAge: 604800, // 7 days
       })
       .send({ accessToken });
+  };
+
+  handleVerify = async (
+    req: Request<{}, {}, {}, { token: string | null }>,
+    _res: Response
+  ) => {
+    const { token } = req.query;
+    if (!token || typeof token !== "string") {
+      throw ApiError.NOT_FOUND();
+    }
   };
 
   private handleFindOneById = async (req: Request, res: Response) => {

@@ -41,13 +41,26 @@ export class RedisClient implements CacheClient {
     return this._client!;
   }
 
-  private createKey(key: string) {
-    return createHash("sha256").update(key).digest().toString("base64");
+  createKey(key: string) {
+    return createHash("sha256").update(key).digest().toString("hex");
+  }
+
+  createOtp(length: number = 6) {
+    let lengthLower = "1";
+    let lengthUpper = "9";
+
+    for (let i = 0; i < length - 1; i++) {
+      lengthLower += "0";
+      lengthUpper += "0";
+    }
+
+    return Math.floor(
+      parseInt(lengthLower, 10) + Math.random() * parseInt(lengthUpper, 10)
+    ).toString();
   }
 
   async get<T>(key: string) {
-    const hash = this.createKey(key);
-    const result = await this.client.get(hash);
+    const result = await this.client.get(key);
     try {
       if (!result) return null;
 
@@ -63,31 +76,18 @@ export class RedisClient implements CacheClient {
    * @param expire Expiration time in seconds. Defaults to 900 seconds (15 minutes).
    * @returns The key to the key-value pair.
    */
-  async set(key: string, data: unknown, expire = 900) {
+  async set(key: string, data: unknown, expire: number = 900) {
     const exists = await this.get(key);
     if (exists) {
       throw ApiError.CONFLICT(`Key ${key} is already cached`);
     }
 
-    const hash = this.createKey(key);
     const value = typeof data === "string" ? data : JSON.stringify(data);
 
-    await this.client.multi().set(hash, value).expire(hash, expire).exec();
-
-    return key;
+    await this.client.multi().set(key, value).expire(key, expire).exec();
   }
 
-  async del(key: string | string[]) {
-    let hash: string;
-
-    if (typeof key === "string") {
-      hash = this.createKey(key);
-      await this.client.del(hash);
-    } else {
-      for (const k in key) {
-        hash = this.createKey(k);
-        await this.client.del(hash);
-      }
-    }
+  async del(key: string) {
+    await this.client.del(key);
   }
 }
