@@ -2,7 +2,7 @@ import { ApiError } from "@shared/utils/api-error";
 import { errors, minimum } from "@shared/utils/zod";
 import z, { ZodError } from "zod";
 
-export class EmailConfig {
+export class NodemailerConfig {
   private static schema = z.object({
     user: z
       .string(errors("process.env.SMTP_USER"))

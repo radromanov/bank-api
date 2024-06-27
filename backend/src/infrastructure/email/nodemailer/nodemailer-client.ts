@@ -1,12 +1,7 @@
-import { createTransport } from "nodemailer";
+import { createTransport, getTestMessageUrl } from "nodemailer";
 import { EmailClient } from "../email-client";
-
-interface NodemailerClientOptions {
-  user: string;
-  pass: string;
-  host: string;
-  port: number;
-}
+import { SendEmailDTO } from "@application/email";
+import { NodemailerConfig } from "@config/nodemailer.config";
 
 export class NodemailerClient implements EmailClient {
   private host: string;
@@ -14,8 +9,8 @@ export class NodemailerClient implements EmailClient {
   private user: string;
   private pass: string;
 
-  constructor(options: NodemailerClientOptions) {
-    const { host, port, user, pass } = options;
+  constructor(options: typeof NodemailerConfig) {
+    const { host, port, user, pass } = options.get();
 
     this.host = host;
     this.port = port;
@@ -23,7 +18,7 @@ export class NodemailerClient implements EmailClient {
     this.pass = pass;
   }
 
-  init() {
+  private init() {
     return createTransport({
       host: this.host,
       port: this.port,
@@ -32,5 +27,19 @@ export class NodemailerClient implements EmailClient {
         pass: this.pass,
       },
     });
+  }
+
+  async send(dto: SendEmailDTO): Promise<void> {
+    const { sender, recipient, subject, body } = dto;
+    const transport = this.init();
+
+    const info = await transport.sendMail({
+      sender,
+      to: recipient,
+      subject,
+      text: body,
+    });
+
+    console.log("Email preview URL:", getTestMessageUrl(info));
   }
 }
