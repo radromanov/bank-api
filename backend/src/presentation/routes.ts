@@ -14,6 +14,8 @@ import {
   UserServiceImpl,
 } from "@application/user";
 import { AuthServiceImpl, LoginUseCase } from "@application/auth";
+import { RedisClient } from "@infrastructure/cache/redis/redis.client";
+import { RedisConfig } from "@config/redis.config";
 
 export class AppRoutes {
   private routes: Router;
@@ -42,10 +44,13 @@ export class AppRoutes {
     const authService = new AuthServiceImpl(findUserUseCase);
     const loginUseCase = new LoginUseCase(authService);
 
+    const redisCache = new RedisClient(RedisConfig);
+
     const authController = new AuthController(
       newUserUseCase,
       findUserUseCase,
-      loginUseCase
+      loginUseCase,
+      redisCache
     );
     const authRoutes = new AuthRoutes(authController);
 

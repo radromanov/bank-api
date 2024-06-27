@@ -4,16 +4,20 @@ import { ApiError } from "@shared/utils/api-error";
 import { email, id } from "@shared/utils/zod";
 import { LoginDTO, LoginUseCase } from "@application/auth";
 import { BankApiConfig } from "@config/bank-api.config";
+import { CacheClient } from "@infrastructure/cache/cache.client";
 
 export class AuthController {
   constructor(
     private readonly newUser: NewUserUseCase,
     private readonly findUser: FindUserUseCase,
-    private readonly loginUser: LoginUseCase
+    private readonly loginUser: LoginUseCase,
+    private readonly cache: CacheClient
   ) {}
 
   handleRegister = async (req: Request, res: Response) => {
     const dto = NewUserDTO.create(req.body);
+
+    await this.cache.set(dto.email, dto);
 
     await this.newUser.createOne(dto);
 
