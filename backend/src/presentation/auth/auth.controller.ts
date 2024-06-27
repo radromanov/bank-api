@@ -5,11 +5,18 @@ import { email, id } from "@shared/utils/zod";
 import { LoginDTO, LoginUseCase } from "@application/auth";
 import { BankApiConfig } from "@config/bank-api.config";
 import { CacheClient } from "@infrastructure/cache/cache.client";
+import { ExistingUserUseCase } from "@application/user/use-cases/existing-user.use-case";
+
+interface Cached {
+  otp: string;
+  user: NewUserDTO;
+}
 
 export class AuthController {
   constructor(
     private readonly newUser: NewUserUseCase,
     private readonly findUser: FindUserUseCase,
+    private readonly existingUser: ExistingUserUseCase,
     private readonly loginUser: LoginUseCase,
     private readonly cache: CacheClient
   ) {}
@@ -17,12 +24,14 @@ export class AuthController {
   handleRegister = async (req: Request, res: Response) => {
     const dto = NewUserDTO.create(req.body);
 
+    const isExists = await this.existingUser.execute(dto.email);
+    if (isExists) throw ApiError.CONFLICT("User already exists");
+
     const key = this.cache.createKey(dto.email);
     const otp = this.cache.createOtp();
     await this.cache.set(key, { otp, user: dto });
 
-    await this.newUser.createOne(dto);
-    res.status(201).json(key);
+    res.status(200).json(key);
   };
 
   handleFindOne = async (req: Request, res: Response) => {
@@ -53,13 +62,23 @@ export class AuthController {
   };
 
   handleVerify = async (
-    req: Request<{}, {}, {}, { token: string | null }>,
-    _res: Response
+    req: Request<{}, {}, { otp: string | null; token: string | null }>,
+    res: Response
   ) => {
-    const { token } = req.query;
-    if (!token || typeof token !== "string") {
-      throw ApiError.NOT_FOUND();
+    const { otp, token } = req.body;
+    if (!otp || !token) {
+      throw ApiError.BAD_REQUEST("Missing or invalid verification payload");
     }
+
+    const cached = await this.cache.get<Cached>(token);
+    if (!cached || cached.otp !== otp) {
+      throw ApiError.NOT_FOUND(); // Error is 404 (generic) in order to prevent narrowing
+    }
+
+    await this.cache.del(token);
+    await this.newUser.createOne(cached.user);
+
+    res.sendStatus(201); // Created user
   };
 
   private handleFindOneById = async (req: Request, res: Response) => {

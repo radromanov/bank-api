@@ -7,10 +7,10 @@ export class UserServiceImpl implements UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
   async createUser(dto: NewUserDTO): Promise<void> {
-    const exists = await this.userRepository.findByEmail(dto.email);
+    const exists = await this.userRepository.getUserId(dto.email);
 
     if (exists) {
-      throw ApiError.CONFLICT(`User already exists`);
+      throw ApiError.CONFLICT("User already exists");
     }
 
     const user = new User(
@@ -30,5 +30,12 @@ export class UserServiceImpl implements UserService {
 
   async getUserById(id: string): Promise<User | null> {
     return this.userRepository.findById(id);
+  }
+
+  async isExists(email: string): Promise<boolean> {
+    const result = await this.userRepository.getUserId(email);
+
+    if (!result || !result.id) return false;
+    return true;
   }
 }

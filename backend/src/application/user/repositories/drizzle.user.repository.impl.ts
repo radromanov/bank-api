@@ -74,4 +74,26 @@ export class DrizzleUserRepositoryImpl implements UserRepository {
       return null;
     }
   }
+
+  async getUserId(email: string): Promise<{ id: string } | null> {
+    try {
+      const result = await this.drizzleClient
+        .select({ id: usersTable.id })
+        .from(usersTable)
+        .where(eq(usersTable.email, email))
+        .then((result) => result[0]);
+
+      if (!result || !result.id) {
+        return null;
+      }
+
+      return result;
+    } catch (error) {
+      if (error instanceof ApiError) {
+        console.log(error.message);
+      } else console.log(error);
+
+      return null;
+    }
+  }
 }

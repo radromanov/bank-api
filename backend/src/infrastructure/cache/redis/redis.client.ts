@@ -66,7 +66,7 @@ export class RedisClient implements CacheClient {
 
       return JSON.parse(result) as T;
     } catch (error) {
-      return result;
+      return null;
     }
   }
 

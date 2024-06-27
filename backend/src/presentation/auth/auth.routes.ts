@@ -12,6 +12,7 @@ export class AuthRoutes {
   init() {
     this.router.post("/register", catcher(this.authController.handleRegister));
     this.router.post("/login", catcher(this.authController.handleLogin));
+    this.router.post("/verify", catcher(this.authController.handleVerify));
     this.router.get("/", catcher(this.authController.handleFindOne));
 
     return this.router;
