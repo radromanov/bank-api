@@ -122,6 +122,10 @@ export class AuthController {
     }
   };
 
+  handleMe = async (_req: Request, res: Response) => {
+    res.sendStatus(200);
+  };
+
   private handleFindOneById = async (req: Request, res: Response) => {
     const validId = id().safeParse(req.query.id);
 
