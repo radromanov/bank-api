@@ -1,1 +1,1 @@
-export abstract class DatabaseClient {}
+export interface DatabaseClient {}
