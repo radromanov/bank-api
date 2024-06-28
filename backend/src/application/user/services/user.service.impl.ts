@@ -1,11 +1,13 @@
-import { NewUserDTO } from "../dtos/new-user.dto";
 import { ApiError } from "@shared/utils";
+
 import { User, UserRepository, UserService } from "@domain/user";
+
+import { RegisterDTO } from "@application/auth";
 
 export class UserServiceImpl implements UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  async createUser(dto: NewUserDTO): Promise<void> {
+  async createUser(dto: RegisterDTO): Promise<void> {
     const exists = await this.userRepository.getUserId(dto.email);
 
     if (exists) {

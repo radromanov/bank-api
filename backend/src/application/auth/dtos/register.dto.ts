@@ -2,9 +2,9 @@ import { v7 as uuidv7 } from "uuid";
 
 import { ApiError, createUserAvatar } from "@shared/utils";
 
-import { NewUserSchema } from "@domain/user";
+import { RegisterSchema } from "@domain/auth";
 
-export class NewUserDTO {
+export class RegisterDTO {
   private constructor(
     public id: string,
     public email: string,
@@ -14,16 +14,16 @@ export class NewUserDTO {
   ) {}
 
   static create(payload: { [key: string]: unknown }) {
-    const { email, firstName, lastName } = NewUserDTO.parse(payload);
+    const { email, firstName, lastName } = RegisterDTO.parse(payload);
 
     const id = uuidv7();
     const image = createUserAvatar(firstName, lastName);
 
-    return new NewUserDTO(id, email, firstName, lastName, image);
+    return new RegisterDTO(id, email, firstName, lastName, image);
   }
 
   private static parse(payload: unknown) {
-    const parsed = NewUserSchema.safeParse(payload);
+    const parsed = RegisterSchema.safeParse(payload);
 
     if (!parsed.success) {
       throw ApiError.UNPROCESSABLE_ENTITY(

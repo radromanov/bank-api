@@ -1,7 +1,7 @@
-import { NewUserDTO } from "@application/user";
+import { RegisterDTO } from "@application/auth";
 
 export interface Cached {
   otp: string;
-  user: NewUserDTO;
+  user: RegisterDTO;
   type: "register" | "login";
 }

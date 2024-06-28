@@ -24,9 +24,3 @@ export const UserSchema = z.object({
   createdAt: date("createdAt"),
   updatedAt: date("updatedAt"),
 });
-
-export const NewUserSchema = z.object({
-  email: email("New user email"),
-  firstName: notNullStr("First name", 1, 255),
-  lastName: notNullStr("Last name", 1, 255),
-});

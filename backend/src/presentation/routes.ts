@@ -15,12 +15,12 @@ import {
   DrizzleUserRepositoryImpl,
   ExistingUserUseCase,
   FindUserUseCase,
-  NewUserUseCase,
   UserServiceImpl,
 } from "@application/user";
 
 import {
   AuthServiceImpl,
+  RegisterUseCase,
   LoginUseCase,
   VerifyJWTUseCase,
   RefreshTokenUseCase,
@@ -50,7 +50,6 @@ export class AppRoutes {
     const userRepository = new DrizzleUserRepositoryImpl(drizzleClient);
 
     const userService = new UserServiceImpl(userRepository);
-    const newUserUseCase = new NewUserUseCase(userService);
     const findUserUseCase = new FindUserUseCase(userService);
     const existingUserUseCase = new ExistingUserUseCase(userService);
 
@@ -59,6 +58,7 @@ export class AppRoutes {
     const sendEmailUseCase = new SendEmailUseCase(emailService);
 
     const authService = new AuthServiceImpl(findUserUseCase);
+    const registerUseCase = new RegisterUseCase(userService);
     const loginUseCase = new LoginUseCase(authService);
     const verifyJwtUseCase = new VerifyJWTUseCase(authService);
     const refreshTokenUseCase = new RefreshTokenUseCase(authService);
@@ -66,7 +66,7 @@ export class AppRoutes {
     const redisCache = new RedisClient(RedisConfig);
 
     const authController = new AuthController(
-      newUserUseCase,
+      registerUseCase,
       findUserUseCase,
       existingUserUseCase,
       loginUseCase,

@@ -1,4 +1,5 @@
 import { User, UserService } from "@domain/user";
+
 import { ApiError } from "@shared/utils";
 
 export class FindUserUseCase {

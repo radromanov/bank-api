@@ -1,10 +1,11 @@
 import { UserService } from "@domain/user";
-import { NewUserDTO } from "../dtos/new-user.dto";
 
-export class NewUserUseCase {
+import { RegisterDTO } from "@application/auth";
+
+export class RegisterUseCase {
   constructor(private readonly userService: UserService) {}
 
-  async createOne(dto: NewUserDTO): Promise<void> {
+  async execute(dto: RegisterDTO): Promise<void> {
     await this.userService.createUser(dto);
   }
 }

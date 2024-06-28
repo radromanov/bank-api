@@ -5,14 +5,15 @@ import { BankApiConfig } from "@config/bank-api.config";
 import { ApiError, email, id } from "@shared/utils";
 import { Cached } from "@shared/types";
 
-import {
-  ExistingUserUseCase,
-  FindUserUseCase,
-  NewUserDTO,
-  NewUserUseCase,
-} from "@application/user";
+import { ExistingUserUseCase, FindUserUseCase } from "@application/user";
 
-import { LoginDTO, LoginUseCase, VerifyDTO } from "@application/auth";
+import {
+  RegisterDTO,
+  RegisterUseCase,
+  LoginDTO,
+  LoginUseCase,
+  VerifyDTO,
+} from "@application/auth";
 
 import { SendEmailDTO, SendEmailUseCase } from "@application/email";
 
@@ -20,16 +21,16 @@ import { CacheClient } from "@infrastructure/cache";
 
 export class AuthController {
   constructor(
-    private readonly newUser: NewUserUseCase,
+    private readonly register: RegisterUseCase,
     private readonly findUser: FindUserUseCase,
     private readonly existingUser: ExistingUserUseCase,
-    private readonly loginUser: LoginUseCase,
+    private readonly login: LoginUseCase,
     private readonly cache: CacheClient,
     private readonly sendEmail: SendEmailUseCase
   ) {}
 
   handleRegister = async (req: Request, res: Response) => {
-    const dto = NewUserDTO.create(req.body);
+    const dto = RegisterDTO.create(req.body);
 
     const isExists = await this.existingUser.execute(dto.email);
     if (isExists) throw ApiError.CONFLICT("User already exists");
@@ -96,25 +97,23 @@ export class AuthController {
     await this.cache.del(dto.token);
 
     if (cached.type === "register") {
-      await this.newUser.createOne(cached.user);
+      await this.register.execute(cached.user);
       res.sendStatus(201); // Created user
     } else if (cached.type === "login") {
       const loginDto = LoginDTO.create(cached.user);
-      const { accessToken, refreshToken } = await this.loginUser.execute(
-        loginDto
-      );
+      const { access, refresh } = await this.login.execute(loginDto);
 
       const env = BankApiConfig.getOne("env");
 
       res
         .status(200)
-        .cookie("refresh_token", refreshToken, {
+        .cookie("refresh_token", refresh, {
           httpOnly: true,
           secure: env === "production" ? true : false, // Allows for easier testing in Postman
           sameSite: "strict",
           maxAge: 604800, // 7 days
         })
-        .send({ accessToken });
+        .send({ accessToken: access });
     } else {
       throw ApiError.BAD_REQUEST("Unable to verify");
     }
