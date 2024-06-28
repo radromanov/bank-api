@@ -1,9 +1,12 @@
-import { json } from "drizzle-orm/pg-core";
-import { boolean } from "drizzle-orm/pg-core";
-import { uniqueIndex } from "drizzle-orm/pg-core";
-import { timestamp } from "drizzle-orm/pg-core";
-import { varchar } from "drizzle-orm/pg-core";
-import { pgTable } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  varchar,
+  timestamp,
+  uniqueIndex,
+  json,
+  boolean,
+  decimal,
+} from "drizzle-orm/pg-core";
 
 export const usersTable = pgTable(
   "users",
@@ -25,5 +28,45 @@ export const usersTable = pgTable(
   (t) => ({
     idIdx: uniqueIndex("unique_user_id").on(t.id),
     emailIdx: uniqueIndex("unique_user_email").on(t.email),
+  })
+);
+
+export const transactionsTable = pgTable(
+  "transactions",
+  {
+    id: varchar("id", { length: 36 }).primaryKey().notNull(),
+
+    userId: varchar("user_id", { length: 36 })
+      .notNull()
+      .references(() => usersTable.id),
+
+    amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+
+    currency: varchar("currency", {
+      length: 4,
+      enum: ["EUR", "BGN", "USD"],
+    })
+      .default("BGN")
+      .notNull(),
+    type: varchar("type", {
+      length: 8,
+      enum: ["Purchase", "Refund", "Transfer"],
+    })
+      .default("Purchase")
+      .notNull(),
+    status: varchar("status", {
+      length: 12,
+      enum: ["Pending", "Completed", "Failed"],
+    })
+      .default("Pending")
+      .notNull(),
+
+    description: varchar("description", { length: 255 }).notNull(),
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (t) => ({
+    idIdx: uniqueIndex("unique_user_id").on(t.id),
   })
 );
