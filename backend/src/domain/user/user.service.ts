@@ -1,5 +1,5 @@
-import { User } from "./user.entity";
 import { RegisterDTO } from "@application/auth";
+import { User } from "./user.schema";
 
 export interface UserService {
   createUser(dto: RegisterDTO): Promise<void>;

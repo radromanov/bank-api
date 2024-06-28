@@ -3,7 +3,7 @@ import { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 
 import { ApiError } from "@shared/utils";
 
-import { User, UserSchema, UserRepository } from "@domain/user";
+import { User, UserInsert, UserRepository } from "@domain/user";
 
 import { DrizzleSchema, usersTable } from "@infrastructure/database";
 
@@ -12,7 +12,7 @@ export class DrizzleUserRepositoryImpl implements UserRepository {
     private readonly drizzleClient: PostgresJsDatabase<DrizzleSchema>
   ) {}
 
-  async save(user: User): Promise<void> {
+  async save(user: UserInsert): Promise<void> {
     try {
       await this.drizzleClient.insert(usersTable).values(user);
     } catch (error) {
@@ -31,7 +31,7 @@ export class DrizzleUserRepositoryImpl implements UserRepository {
         return null;
       }
 
-      const user = UserSchema.safeParse(result);
+      const user = User.safeParse(result);
       if (!user.success) {
         throw ApiError.UNPROCESSABLE_ENTITY(
           user.error.errors[0].message || "Invalid customer result"
@@ -60,7 +60,7 @@ export class DrizzleUserRepositoryImpl implements UserRepository {
         return null;
       }
 
-      const user = UserSchema.safeParse(result);
+      const user = User.safeParse(result);
       if (!user.success) {
         throw ApiError.UNPROCESSABLE_ENTITY(
           user.error.errors[0].message || "Invalid customer result"

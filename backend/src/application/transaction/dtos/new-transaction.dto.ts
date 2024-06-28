@@ -1,21 +1,21 @@
 import { ApiError } from "@shared/utils";
-import { NewTransactionSchema } from "@domain/transaction";
+import { TransactionInsert } from "@domain/transaction";
 
-export class NewTransactionDTO {
+export class TransactionInsertDTO {
   private constructor(
-    public id: NewTransactionSchema["id"],
-    public userId: NewTransactionSchema["userId"],
-    public amount: NewTransactionSchema["amount"],
-    public description: NewTransactionSchema["description"],
-    public currency: NewTransactionSchema["currency"],
-    public type: NewTransactionSchema["type"],
-    public status: NewTransactionSchema["status"]
+    public id: TransactionInsert["id"],
+    public userId: TransactionInsert["userId"],
+    public amount: TransactionInsert["amount"],
+    public description: TransactionInsert["description"],
+    public currency: TransactionInsert["currency"],
+    public type: TransactionInsert["type"],
+    public status: TransactionInsert["status"]
   ) {}
 
   static create(payload: unknown) {
     const dto = this.parse(payload);
 
-    return new NewTransactionDTO(
+    return new TransactionInsertDTO(
       dto.id,
       dto.userId,
       dto.amount,
@@ -27,7 +27,7 @@ export class NewTransactionDTO {
   }
 
   private static parse(payload: unknown) {
-    const valid = NewTransactionSchema.safeParse(payload);
+    const valid = TransactionInsert.safeParse(payload);
 
     if (!valid.success) {
       throw ApiError.UNPROCESSABLE_ENTITY(

@@ -1,6 +1,6 @@
-import { NewTransactionDTO } from "@application/transaction";
+import { TransactionInsertDTO } from "@application/transaction";
 export interface TransactionService {
-  createOne(dto: NewTransactionDTO): Promise<void>;
+  createOne(dto: TransactionInsertDTO): Promise<void>;
   //   createMany(dtos: TransactionDTO[]): Promise<void>;
   //   updateOne(dto: TransactionDTO): Promise<void>;
   //   updateMany(dtos: TransactionDTO[]): Promise<void>;

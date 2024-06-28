@@ -1,7 +1,7 @@
-import { User } from "./user.entity";
+import { User, UserInsert } from "./user.schema";
 
 export interface UserRepository {
-  save(customer: User): Promise<void>;
+  save(user: UserInsert): Promise<void>;
   findById(id: string): Promise<User | null>;
   findByEmail(email: string): Promise<User | null>;
   getUserId(email: string): Promise<{ id: string } | null>;

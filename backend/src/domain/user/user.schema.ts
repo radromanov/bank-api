@@ -8,9 +8,10 @@ import {
   notNullStr,
   url,
 } from "@shared/utils";
-import { createSelectSchema } from "drizzle-zod";
+import { InferInsertModel, InferSelectModel } from "drizzle-orm";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
-export const UserSchema = createSelectSchema(usersTable, {
+export const User = createSelectSchema(usersTable, {
   id: id(),
   email: email("User email"),
   firstName: notNullStr("firstName", 1, 255),
@@ -25,3 +26,23 @@ export const UserSchema = createSelectSchema(usersTable, {
   createdAt: date("createdAt"),
   updatedAt: date("updatedAt"),
 });
+
+export interface User extends InferSelectModel<typeof usersTable> {
+  roles: ("ADMIN_ROLE" | "BASIC_ROLE")[];
+}
+
+export const UserInsert = createInsertSchema(usersTable, {
+  id: id(),
+  email: email("User email"),
+  firstName: notNullStr("firstName", 1, 255),
+  lastName: notNullStr("lastName", 1, 255),
+  image: url("image"),
+  roles: enumeration<["ADMIN_ROLE", "BASIC_ROLE"]>("roles", [
+    "ADMIN_ROLE",
+    "BASIC_ROLE",
+  ]).array(),
+});
+
+export interface UserInsert extends InferInsertModel<typeof usersTable> {
+  roles?: ("ADMIN_ROLE" | "BASIC_ROLE")[] | undefined;
+}
