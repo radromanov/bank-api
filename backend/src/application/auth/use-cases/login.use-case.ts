@@ -1,5 +1,5 @@
 import { AuthService } from "@domain/auth";
-import { LoginDTO } from "../dtos";
+import { LoginDTO } from "../dtos/login.dto";
 
 export class LoginUseCase {
   constructor(private readonly authService: AuthService) {}

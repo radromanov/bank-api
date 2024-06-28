@@ -90,4 +90,8 @@ export class RedisClient implements CacheClient {
   async del(key: string) {
     await this.client.del(key);
   }
+
+  async incr(key: string): Promise<number> {
+    return await this.client.incr(key);
+  }
 }
