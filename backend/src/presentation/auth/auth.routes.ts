@@ -14,15 +14,21 @@ export class AuthRoutes {
   }
 
   init() {
-    this.router.post("/register", catcher(this.authController.handleRegister));
-    this.router.post("/login", catcher(this.authController.handleLogin));
-    this.router.post("/verify", catcher(this.authController.handleVerify));
-    this.router.get("/", catcher(this.authController.handleFindOne));
-    this.router.get(
-      "/me",
-      this.authMiddleware.isAuthed,
-      catcher(this.authController.handleMe)
-    );
+    this.router
+      .post("/register", catcher(this.authController.handleRegister))
+      .post("/login", catcher(this.authController.handleLogin))
+      .post("/verify", catcher(this.authController.handleVerify))
+
+      .get(
+        "/",
+        this.authMiddleware.isAuthed,
+        catcher(this.authController.handleFindOne)
+      )
+      .get(
+        "/me",
+        this.authMiddleware.isAuthed,
+        catcher(this.authController.handleMe)
+      );
 
     return this.router;
   }
