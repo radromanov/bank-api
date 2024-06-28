@@ -1,17 +1,23 @@
+import { RefreshTokenUseCase } from "@application/auth/use-cases/refresh-token.use-case";
 import { VerifyJWTUseCase } from "@application/auth/use-cases/verify-jwt.use-case";
 import { ApiError } from "@shared/utils";
 import { Request, Response, NextFunction } from "express";
 
 export class AuthMiddleware {
-  constructor(private readonly verifyJwt: VerifyJWTUseCase) {}
+  constructor(
+    private readonly verifyJwt: VerifyJWTUseCase,
+    private readonly refreshToken: RefreshTokenUseCase
+  ) {}
 
-  isAuthed = async (req: Request, _res: Response, next: NextFunction) => {
+  isAuthed = async (req: Request, res: Response, next: NextFunction) => {
     const bearer = req.headers.authorization;
 
+    // Bearer token doesn't exist or is not in valid format
     if (!bearer || !bearer.startsWith("Bearer ")) {
       // Fallback to looking for a refresh token
-      return this.handleUnauthorized(req, next);
+      return await this.handleUnauthorized(req, res, next);
     }
+
     // Get the token value
     const token = bearer.split(" ")[1];
 
@@ -20,18 +26,37 @@ export class AuthMiddleware {
 
       next();
     } catch (error) {
-      return this.handleUnauthorized(req, next);
+      return await this.handleUnauthorized(req, res, next);
     }
   };
 
-  private handleUnauthorized = (req: Request, next: NextFunction) => {
+  private handleUnauthorized = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     const refresh = req.cookies["refresh_token"];
     if (!refresh) {
+      console.warn("No refresh token found, user needs to log in.");
       return next(ApiError.FORBIDDEN("Please log in before continuing"));
     }
-    // TODO: Add logic to refresh the access token using the refresh token
-    // Example: const newAccessToken = await this.refreshToken(refresh);
-    // res.setHeader('Authorization', `Bearer ${newAccessToken}`);
-    // await this.verifyJwt.execute(newAccessToken);
+
+    console.log(
+      "Found refresh token in cookies, generating a new access token..."
+    );
+    try {
+      const newAccessToken = await this.refreshToken.execute(refresh);
+      res.setHeader("Authorization", `Bearer ${newAccessToken}`);
+
+      await this.verifyJwt.execute(newAccessToken);
+      next();
+    } catch (error) {
+      console.error("Failed to refresh token", error);
+      if (error instanceof ApiError) {
+        next(error);
+      } else {
+        next(ApiError.INTERNAL_SERVER_ERROR());
+      }
+    }
   };
 }

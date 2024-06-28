@@ -22,6 +22,7 @@ import { AuthServiceImpl, LoginUseCase } from "@application/auth";
 import { EmailServiceImpl, SendEmailUseCase } from "@application/email";
 import { AuthMiddleware } from "./auth/auth.middleware";
 import { VerifyJWTUseCase } from "@application/auth/use-cases/verify-jwt.use-case";
+import { RefreshTokenUseCase } from "@application/auth/use-cases/refresh-token.use-case";
 
 export class AppRoutes {
   private routes: Router;
@@ -55,6 +56,7 @@ export class AppRoutes {
     const authService = new AuthServiceImpl(findUserUseCase);
     const loginUseCase = new LoginUseCase(authService);
     const verifyJwtUseCase = new VerifyJWTUseCase(authService);
+    const refreshTokenUseCase = new RefreshTokenUseCase(authService);
 
     const redisCache = new RedisClient(RedisConfig);
 
@@ -66,7 +68,10 @@ export class AppRoutes {
       redisCache,
       sendEmailUseCase
     );
-    const authMiddleware = new AuthMiddleware(verifyJwtUseCase);
+    const authMiddleware = new AuthMiddleware(
+      verifyJwtUseCase,
+      refreshTokenUseCase
+    );
     const authRoutes = new AuthRoutes(authController, authMiddleware);
 
     return authRoutes.init();

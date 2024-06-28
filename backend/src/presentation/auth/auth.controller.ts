@@ -95,8 +95,6 @@ export class AuthController {
 
     await this.cache.del(dto.token);
 
-    console.log(typeof cached.user);
-
     if (cached.type === "register") {
       await this.newUser.createOne(cached.user);
       res.sendStatus(201); // Created user
