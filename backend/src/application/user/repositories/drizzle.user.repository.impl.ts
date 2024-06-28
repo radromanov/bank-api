@@ -3,7 +3,7 @@ import { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 
 import { ApiError } from "@shared/utils";
 
-import { User, UserRepository, UserSchema } from "@domain/user";
+import { User, UserSchema, UserRepository } from "@domain/user";
 
 import { DrizzleSchema, usersTable } from "@infrastructure/database";
 

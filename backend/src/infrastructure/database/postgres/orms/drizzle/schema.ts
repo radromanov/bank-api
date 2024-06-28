@@ -67,6 +67,6 @@ export const transactionsTable = pgTable(
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
   (t) => ({
-    idIdx: uniqueIndex("unique_user_id").on(t.id),
+    idIdx: uniqueIndex("unique_transaction_id").on(t.id),
   })
 );

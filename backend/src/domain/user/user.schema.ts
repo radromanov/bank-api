@@ -1,3 +1,4 @@
+import { usersTable } from "@infrastructure/database";
 import {
   boolean,
   date,
@@ -7,9 +8,9 @@ import {
   notNullStr,
   url,
 } from "@shared/utils";
-import z from "zod";
+import { createSelectSchema } from "drizzle-zod";
 
-export const UserSchema = z.object({
+export const UserSchema = createSelectSchema(usersTable, {
   id: id(),
   email: email("User email"),
   firstName: notNullStr("firstName", 1, 255),
