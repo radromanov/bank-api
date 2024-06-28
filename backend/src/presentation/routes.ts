@@ -28,6 +28,12 @@ import {
 
 import { EmailServiceImpl, SendEmailUseCase } from "@application/email";
 
+import {
+  CreateTransactionUseCase,
+  DrizzleTransactionRepositoryImpl,
+  TransactionServiceImpl,
+} from "@application/transaction";
+
 export class AppRoutes {
   private router: Router;
 
@@ -47,7 +53,11 @@ export class AppRoutes {
   private routes() {
     const sql = new Postgres(PostgresConfig).sql;
     const drizzleClient = new DrizzleClient(sql).client;
+
     const userRepository = new DrizzleUserRepositoryImpl(drizzleClient);
+    const transactionRepository = new DrizzleTransactionRepositoryImpl(
+      drizzleClient
+    );
 
     const userService = new UserServiceImpl(userRepository);
     const findUserUseCase = new FindUserUseCase(userService);
@@ -57,11 +67,18 @@ export class AppRoutes {
     const emailService = new EmailServiceImpl(emailClient);
     const sendEmailUseCase = new SendEmailUseCase(emailService);
 
+    const transactionService = new TransactionServiceImpl(
+      transactionRepository
+    );
+
     const authService = new AuthServiceImpl(findUserUseCase);
     const registerUseCase = new RegisterUseCase(userService);
     const loginUseCase = new LoginUseCase(authService);
     const verifyJwtUseCase = new VerifyJWTUseCase(authService);
     const refreshTokenUseCase = new RefreshTokenUseCase(authService);
+    const createTransactionUseCase = new CreateTransactionUseCase(
+      transactionService
+    );
 
     const redisCache = new RedisClient(RedisConfig);
 
@@ -73,7 +90,9 @@ export class AppRoutes {
       redisCache,
       sendEmailUseCase
     );
-    const transactionController = new TransactionController();
+    const transactionController = new TransactionController(
+      createTransactionUseCase
+    );
 
     const authMiddleware = new AuthMiddleware(
       verifyJwtUseCase,

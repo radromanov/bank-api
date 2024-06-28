@@ -1,6 +1,6 @@
 import { ApiError } from "@shared/utils";
 
-import { User, UserInsert, UserRepository, UserService } from "@domain/user";
+import { User, UserRepository, UserService } from "@domain/user";
 
 import { RegisterDTO } from "@application/auth";
 
@@ -14,15 +14,7 @@ export class UserServiceImpl implements UserService {
       throw ApiError.CONFLICT("User already exists");
     }
 
-    const user = UserInsert.parse({
-      id: dto.id,
-      email: dto.email,
-      firstName: dto.firstName,
-      lastName: dto.lastName,
-      image: dto.image,
-    });
-
-    await this.userRepository.save(user);
+    await this.userRepository.save(dto);
   }
 
   async getUserByEmail(email: string): Promise<User | null> {

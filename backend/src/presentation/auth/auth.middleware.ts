@@ -21,7 +21,9 @@ export class AuthMiddleware {
     const token = bearer.split(" ")[1];
 
     try {
-      await this.verifyJwt.execute(token);
+      const user = await this.verifyJwt.execute(token);
+
+      res.locals.user = user;
 
       next();
     } catch (error) {
@@ -47,7 +49,10 @@ export class AuthMiddleware {
       const newAccessToken = await this.refreshToken.execute(refresh);
       res.setHeader("Authorization", `Bearer ${newAccessToken}`);
 
-      await this.verifyJwt.execute(newAccessToken);
+      const user = await this.verifyJwt.execute(newAccessToken);
+
+      res.locals.user = user;
+
       next();
     } catch (error) {
       console.error("Failed to refresh token", error);

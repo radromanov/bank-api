@@ -3,16 +3,17 @@ import { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 
 import { ApiError } from "@shared/utils";
 
-import { User, UserInsert, UserRepository } from "@domain/user";
+import { User, UserRepository } from "@domain/user";
 
 import { DrizzleSchema, usersTable } from "@infrastructure/database";
+import { RegisterDTO } from "@application/auth";
 
 export class DrizzleUserRepositoryImpl implements UserRepository {
   constructor(
     private readonly drizzleClient: PostgresJsDatabase<DrizzleSchema>
   ) {}
 
-  async save(user: UserInsert): Promise<void> {
+  async save(user: RegisterDTO): Promise<void> {
     try {
       await this.drizzleClient.insert(usersTable).values(user);
     } catch (error) {

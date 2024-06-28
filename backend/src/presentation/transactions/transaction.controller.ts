@@ -1,11 +1,23 @@
+import {
+  CreateTransactionUseCase,
+  TransactionInsertDTO,
+} from "@application/transaction";
 import { Request, Response } from "express";
 
 export class TransactionController {
-  constructor() {}
+  constructor(private readonly createTransaction: CreateTransactionUseCase) {}
 
   handleCreateOne = async (req: Request, res: Response) => {
-    const payload = req.body;
+    // Attached by the auth middleware if the user is logged in
+    const userId = res.locals.user.id;
 
-    res.status(201).json(payload);
+    const transaction = TransactionInsertDTO.create({
+      ...req.body,
+      userId,
+    });
+
+    await this.createTransaction.execute(transaction);
+
+    res.status(201).json(transaction);
   };
 }

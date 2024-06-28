@@ -1,4 +1,7 @@
+import { v7 as uuidv7 } from "uuid";
+
 import { ApiError } from "@shared/utils";
+
 import { TransactionInsert } from "@domain/transaction";
 
 export class TransactionInsertDTO {
@@ -12,8 +15,9 @@ export class TransactionInsertDTO {
     public status: TransactionInsert["status"]
   ) {}
 
-  static create(payload: unknown) {
-    const dto = this.parse(payload);
+  static create(payload: { [key: string]: any }) {
+    const id = uuidv7();
+    const dto = this.parse({ ...payload, id });
 
     return new TransactionInsertDTO(
       dto.id,
@@ -27,6 +31,8 @@ export class TransactionInsertDTO {
   }
 
   private static parse(payload: unknown) {
+    console.log("incoming transaction payload", payload);
+
     const valid = TransactionInsert.safeParse(payload);
 
     if (!valid.success) {
