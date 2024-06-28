@@ -1,6 +1,5 @@
-import { RefreshTokenUseCase } from "@application/auth/use-cases/refresh-token.use-case";
-import { VerifyJWTUseCase } from "@application/auth/use-cases/verify-jwt.use-case";
 import { ApiError } from "@shared/utils";
+import { RefreshTokenUseCase, VerifyJWTUseCase } from "@application/auth";
 import { Request, Response, NextFunction } from "express";
 
 export class AuthMiddleware {

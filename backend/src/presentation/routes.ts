@@ -18,11 +18,16 @@ import {
   NewUserUseCase,
   UserServiceImpl,
 } from "@application/user";
-import { AuthServiceImpl, LoginUseCase } from "@application/auth";
+
+import {
+  AuthServiceImpl,
+  LoginUseCase,
+  VerifyJWTUseCase,
+  RefreshTokenUseCase,
+} from "@application/auth";
+
 import { EmailServiceImpl, SendEmailUseCase } from "@application/email";
 import { AuthMiddleware } from "./auth/auth.middleware";
-import { VerifyJWTUseCase } from "@application/auth/use-cases/verify-jwt.use-case";
-import { RefreshTokenUseCase } from "@application/auth/use-cases/refresh-token.use-case";
 
 export class AppRoutes {
   private routes: Router;

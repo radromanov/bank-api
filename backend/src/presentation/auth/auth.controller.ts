@@ -1,16 +1,19 @@
 import { Request, Response } from "express";
+import { BankApiConfig } from "@config/bank-api.config";
+
 import {
   ExistingUserUseCase,
   FindUserUseCase,
   NewUserDTO,
   NewUserUseCase,
 } from "@application/user";
-import { BankApiConfig } from "@config/bank-api.config";
-import { LoginDTO, LoginUseCase } from "@application/auth";
+
+import { LoginDTO, LoginUseCase, VerifyDTO } from "@application/auth";
+
 import { SendEmailDTO, SendEmailUseCase } from "@application/email";
+
 import { CacheClient } from "@infrastructure/cache";
 import { ApiError, email, id } from "@shared/utils";
-import { VerifyDTO } from "@application/auth/dtos/verify.dto";
 
 interface Cached {
   otp: string;

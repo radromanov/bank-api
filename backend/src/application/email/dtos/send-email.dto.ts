@@ -1,5 +1,5 @@
-import { SendEmailSchema } from "@domain/email/email.schema";
 import { ApiError } from "@shared/utils/api-error";
+import { SendEmailSchema } from "@domain/email";
 
 export class SendEmailDTO {
   private constructor(
