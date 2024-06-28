@@ -6,7 +6,7 @@ import { RedisConfig } from "@config/redis.config";
 
 const app = express();
 const cache = new RedisClient(RedisConfig);
-const ratelimiter = new RateLimiter(cache);
+const ratelimiter = new RateLimiter(cache, { allowed: 5, expire: 10 });
 
 const server = new Server(app, ratelimiter);
 

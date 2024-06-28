@@ -76,7 +76,7 @@ export class RedisClient implements CacheClient {
    * @param expire Expiration time in seconds. Defaults to 900 seconds (15 minutes).
    * @returns The key to the key-value pair.
    */
-  async set(key: string, data: unknown, expire: number = 900) {
+  async set(key: string, data: unknown, seconds: number = 900) {
     const exists = await this.get(key);
     if (exists) {
       throw ApiError.CONFLICT(`Please check your email for more information`);
@@ -84,7 +84,7 @@ export class RedisClient implements CacheClient {
 
     const value = typeof data === "string" ? data : JSON.stringify(data);
 
-    await this.client.multi().set(key, value).expire(key, expire).exec();
+    await this.client.multi().set(key, value).expire(key, seconds).exec();
   }
 
   async del(key: string) {
@@ -93,5 +93,13 @@ export class RedisClient implements CacheClient {
 
   async incr(key: string): Promise<number> {
     return await this.client.incr(key);
+  }
+
+  async expire(key: string, seconds: number = 60): Promise<number> {
+    return await this.client.expire(key, seconds);
+  }
+
+  async ttl(key: string): Promise<number> {
+    return await this.client.ttl(key);
   }
 }
