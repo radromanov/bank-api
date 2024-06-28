@@ -1,5 +1,9 @@
 import { Request, Response } from "express";
+
 import { BankApiConfig } from "@config/bank-api.config";
+
+import { ApiError, email, id } from "@shared/utils";
+import { Cached } from "@shared/types";
 
 import {
   ExistingUserUseCase,
@@ -13,13 +17,6 @@ import { LoginDTO, LoginUseCase, VerifyDTO } from "@application/auth";
 import { SendEmailDTO, SendEmailUseCase } from "@application/email";
 
 import { CacheClient } from "@infrastructure/cache";
-import { ApiError, email, id } from "@shared/utils";
-
-interface Cached {
-  otp: string;
-  user: NewUserDTO;
-  type: "register" | "login";
-}
 
 export class AuthController {
   constructor(

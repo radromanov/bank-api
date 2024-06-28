@@ -1,7 +1,8 @@
 import { v7 as uuidv7 } from "uuid";
-import { ApiError } from "@shared/utils/api-error";
-import { createUserAvatar } from "@shared/utils/create-user-avatar";
-import { NewUserSchema } from "@domain/user/user.schema";
+
+import { ApiError, createUserAvatar } from "@shared/utils";
+
+import { NewUserSchema } from "@domain/user";
 
 export class NewUserDTO {
   private constructor(

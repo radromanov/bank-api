@@ -1,7 +1,7 @@
 import { Router } from "express";
 
-import { AuthController } from "./auth/auth.controller";
-import { AuthRoutes } from "./auth/auth.routes";
+import { AuthRoutes, AuthMiddleware, AuthController } from "./auth";
+import { TransactionRoutes, TransactionController } from "./transactions";
 
 import { PostgresConfig } from "@config/postgres.config";
 import { RedisConfig } from "@config/redis.config";
@@ -27,24 +27,24 @@ import {
 } from "@application/auth";
 
 import { EmailServiceImpl, SendEmailUseCase } from "@application/email";
-import { AuthMiddleware } from "./auth/auth.middleware";
 
 export class AppRoutes {
-  private routes: Router;
+  private router: Router;
 
   constructor() {
-    this.routes = Router();
+    this.router = Router();
   }
 
   init() {
-    const authRouter = this.authRoutes();
+    const { auth, transactions } = this.routes();
 
-    this.routes.use("/auth", authRouter);
+    this.router.use("/auth", auth);
+    this.router.use("/transactions", transactions);
 
-    return this.routes;
+    return this.router;
   }
 
-  private authRoutes() {
+  private routes() {
     const sql = new Postgres(PostgresConfig).sql;
     const drizzleClient = new DrizzleClient(sql).client;
     const userRepository = new DrizzleUserRepositoryImpl(drizzleClient);
@@ -73,12 +73,19 @@ export class AppRoutes {
       redisCache,
       sendEmailUseCase
     );
+    const transactionController = new TransactionController();
+
     const authMiddleware = new AuthMiddleware(
       verifyJwtUseCase,
       refreshTokenUseCase
     );
-    const authRoutes = new AuthRoutes(authController, authMiddleware);
 
-    return authRoutes.init();
+    const authRoutes = new AuthRoutes(authController, authMiddleware);
+    const transactionRoutes = new TransactionRoutes(
+      transactionController,
+      authMiddleware
+    );
+
+    return { auth: authRoutes.init(), transactions: transactionRoutes.init() };
   }
 }

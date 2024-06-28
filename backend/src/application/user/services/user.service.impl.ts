@@ -1,7 +1,6 @@
 import { NewUserDTO } from "../dtos/new-user.dto";
-import { ApiError } from "@shared/utils/api-error";
-import { User } from "@domain/user/user.entity";
-import { UserRepository, UserService } from "@domain/user";
+import { ApiError } from "@shared/utils";
+import { User, UserRepository, UserService } from "@domain/user";
 
 export class UserServiceImpl implements UserService {
   constructor(private readonly userRepository: UserRepository) {}

@@ -1,6 +1,5 @@
-import { ApiError } from "@shared/utils/api-error";
-import { errors, minimum } from "@shared/utils/zod";
 import z, { ZodError } from "zod";
+import { ApiError, errors, minimum } from "@shared/utils";
 
 export class NodemailerConfig {
   private static schema = z.object({

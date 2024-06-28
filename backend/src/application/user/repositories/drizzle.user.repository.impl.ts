@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import { PostgresJsDatabase } from "drizzle-orm/postgres-js";
-import { ApiError } from "@shared/utils/api-error";
+
+import { ApiError } from "@shared/utils";
 
 import { User, UserRepository, UserSchema } from "@domain/user";
 

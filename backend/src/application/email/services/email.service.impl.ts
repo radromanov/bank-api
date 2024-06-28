@@ -1,6 +1,6 @@
 import { EmailService } from "@domain/email";
 import { SendEmailDTO } from "../dtos/send-email.dto";
-import { EmailClient } from "@infrastructure/email/email-client";
+import { EmailClient } from "@infrastructure/email";
 
 export class EmailServiceImpl implements EmailService {
   constructor(private readonly emailClient: EmailClient) {}

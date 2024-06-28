@@ -1,7 +1,8 @@
 import "@shared/utils/dotenv";
+
 import z, { ZodError } from "zod";
-import { ApiError } from "@shared/utils/api-error";
-import { minimum, required } from "@shared/utils/zod";
+
+import { ApiError, minimum, required } from "@shared/utils";
 
 export class BankApiConfig {
   private static schema = z.object({

@@ -1,7 +1,6 @@
 import "@shared/utils/dotenv";
-import { ApiError } from "@shared/utils/api-error";
-import { minimum, required } from "@shared/utils/zod";
 import z, { ZodError } from "zod";
+import { ApiError, minimum, required } from "@shared/utils";
 
 export class PostgresConfig {
   private static schema = z.object({

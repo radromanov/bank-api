@@ -3,13 +3,8 @@ import { FindUserUseCase } from "@application/user";
 import { AuthService } from "@domain/auth";
 import { JWTConfig } from "@config/jwt.config";
 import { ApiError } from "@shared/utils/api-error";
-
-interface Decoded {
-  iat: number;
-  exp: number;
-  id: string;
-  email: string;
-}
+import { Token } from "@shared/types/Token";
+import { Decoded } from "@shared/types";
 
 /**
  * To use this, you need to generate a private key
@@ -30,13 +25,11 @@ export class AuthServiceImpl implements AuthService {
     this.algorithm = JWTConfig.getOne("algorithm");
   }
 
-  async login(
-    email: string
-  ): Promise<{ accessToken: string; refreshToken: string }> {
+  async login(email: string): Promise<Token> {
     try {
       const user = await this.findUserUseCase.findByEmail(email);
 
-      const accessToken = this.generateToken(
+      const access = this.generateToken(
         {
           id: user.id,
           email: user.email,
@@ -50,12 +43,12 @@ export class AuthServiceImpl implements AuthService {
         "1m"
       );
 
-      const refreshToken = this.generateToken(
+      const refresh = this.generateToken(
         { id: user.id, email: user.email },
         "7d"
       );
 
-      return { accessToken, refreshToken };
+      return { access, refresh };
     } catch (error) {
       console.error("Login failed", error);
       if (error instanceof ApiError) {

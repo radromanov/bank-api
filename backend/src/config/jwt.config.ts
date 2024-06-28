@@ -1,10 +1,14 @@
 import "@shared/utils/dotenv";
-import z, { ZodError } from "zod";
+
 import path from "path";
-import { minimum, required } from "@shared/utils/zod";
+
 import { readFileSync } from "fs";
+
+import z, { ZodError } from "zod";
+
+import { ApiError, minimum, required } from "@shared/utils";
+
 import { Algorithm } from "jsonwebtoken";
-import { ApiError } from "@shared/utils/api-error";
 
 export class JWTConfig {
   private static schema = z.object({

@@ -1,4 +1,4 @@
-import { ApiError } from "@shared/utils/api-error";
+import { ApiError } from "@shared/utils";
 import { SendEmailSchema } from "@domain/email";
 
 export class SendEmailDTO {
