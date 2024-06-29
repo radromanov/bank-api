@@ -11,6 +11,8 @@ import {
 import { InferSelectModel } from "drizzle-orm";
 import { createSelectSchema } from "drizzle-zod";
 
+export type UserRole = "ADMIN_ROLE" | "BASIC_ROLE";
+
 export const User = createSelectSchema(usersTable, {
   id: id(),
   email: email("User email"),
