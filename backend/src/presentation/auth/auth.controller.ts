@@ -1,10 +1,8 @@
 import { Request, Response } from "express";
 
-import { v7 as uuidv7 } from "uuid";
-
 import { BankApiConfig } from "@config/bank-api.config";
 
-import { ApiError, createUserAvatar, email, id } from "@shared/utils";
+import { ApiError, email, id } from "@shared/utils";
 
 import { Cached } from "@shared/types";
 
@@ -12,13 +10,17 @@ import { CacheClient } from "@infrastructure/cache";
 
 import { RegisterMapper } from "@infrastructure/auth";
 
+import { UserEntity } from "@infrastructure/user";
+
 import { ExistingUserUseCase, FindUserUseCase } from "@application/user";
 
 import { RegisterUseCase, LoginUseCase } from "@application/auth";
 
-import { SendEmailDTO, SendEmailUseCase } from "@application/email";
+import { SendEmailUseCase } from "@application/email";
 
 import { LoginDto, VerifyDto } from "@domain/auth";
+
+import { SendEmailDto } from "@domain/email";
 
 export class AuthController {
   constructor(
@@ -38,24 +40,18 @@ export class AuthController {
     const isExists = await this.existingUser.execute(req.body.email);
     if (isExists) throw ApiError.CONFLICT("User already exists");
 
-    const id = uuidv7();
-    const image = createUserAvatar(req.body.firstName, req.body.lastName);
-
-    const dto = RegisterMapper.fromEntity({
-      id,
-      email: req.body.email,
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      image,
-    });
+    const entity = new UserEntity(
+      req.body.email,
+      req.body.firstName,
+      req.body.lastName
+    );
+    const dto = RegisterMapper.fromEntity(entity);
 
     const key = this.cache.createKey(dto.email);
     const otp = this.cache.createOtp();
     await this.cache.set(key, { otp, user: dto, type: "register" });
 
-    const emailDto = SendEmailDTO.create({
+    const emailDto = SendEmailDto.create({
       sender: "bank@api.com",
       recipient: dto.email,
       subject: "Verify Your Account | Bank API",
@@ -87,7 +83,7 @@ export class AuthController {
     const otp = this.cache.createOtp();
     await this.cache.set(key, { otp, user: dto, type: "login" });
 
-    const emailDto = SendEmailDTO.create({
+    const emailDto = SendEmailDto.create({
       sender: "bank@api.com",
       recipient: dto.email,
       subject: "Verify Your Account | Bank API",
