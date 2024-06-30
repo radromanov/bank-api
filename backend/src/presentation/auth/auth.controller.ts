@@ -1,23 +1,24 @@
 import { Request, Response } from "express";
 
+import { v7 as uuidv7 } from "uuid";
+
 import { BankApiConfig } from "@config/bank-api.config";
 
-import { ApiError, email, id } from "@shared/utils";
+import { ApiError, createUserAvatar, email, id } from "@shared/utils";
+
 import { Cached } from "@shared/types";
+
+import { CacheClient } from "@infrastructure/cache";
+
+import { RegisterMapper } from "@infrastructure/auth";
 
 import { ExistingUserUseCase, FindUserUseCase } from "@application/user";
 
-import {
-  RegisterDTO,
-  RegisterUseCase,
-  LoginDTO,
-  LoginUseCase,
-  VerifyDTO,
-} from "@application/auth";
+import { RegisterUseCase, LoginUseCase } from "@application/auth";
 
 import { SendEmailDTO, SendEmailUseCase } from "@application/email";
 
-import { CacheClient } from "@infrastructure/cache";
+import { LoginDto, VerifyDto } from "@domain/auth";
 
 export class AuthController {
   constructor(
@@ -30,10 +31,25 @@ export class AuthController {
   ) {}
 
   handleRegister = async (req: Request, res: Response) => {
-    const dto = RegisterDTO.create(req.body);
+    if (!req.body.email) {
+      throw ApiError.BAD_REQUEST();
+    }
 
-    const isExists = await this.existingUser.execute(dto.email);
+    const isExists = await this.existingUser.execute(req.body.email);
     if (isExists) throw ApiError.CONFLICT("User already exists");
+
+    const id = uuidv7();
+    const image = createUserAvatar(req.body.firstName, req.body.lastName);
+
+    const dto = RegisterMapper.fromEntity({
+      id,
+      email: req.body.email,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      image,
+    });
 
     const key = this.cache.createKey(dto.email);
     const otp = this.cache.createOtp();
@@ -62,7 +78,7 @@ export class AuthController {
   };
 
   handleLogin = async (req: Request, res: Response) => {
-    const dto = LoginDTO.create(req.body);
+    const dto = LoginDto.create(req.body);
 
     const isExists = await this.existingUser.execute(dto.email);
     if (!isExists) throw ApiError.UNAUTHORIZED("Incorrect or invalid email");
@@ -87,7 +103,7 @@ export class AuthController {
     req: Request<{}, {}, { otp: string | null; token: string | null }>,
     res: Response
   ) => {
-    const dto = VerifyDTO.create(req.body);
+    const dto = VerifyDto.create(req.body);
 
     const cached = await this.cache.get<Cached>(dto.token);
     if (!cached || cached.otp !== dto.otp) {
@@ -100,7 +116,7 @@ export class AuthController {
       await this.register.execute(cached.user);
       res.sendStatus(201); // Created user
     } else if (cached.type === "login") {
-      const loginDto = LoginDTO.create(cached.user);
+      const loginDto = LoginDto.create(cached.user);
       const { access, refresh } = await this.login.execute(loginDto);
 
       const env = BankApiConfig.getOne("env");
