@@ -1,5 +1,5 @@
-import z from "zod";
 import { email, notNullStr } from "@shared/utils";
+import z from "zod";
 
 export const SendEmailSchema = z.object({
   sender: email("Sender Email"),
@@ -7,5 +7,3 @@ export const SendEmailSchema = z.object({
   subject: notNullStr("subject"),
   body: notNullStr("body"),
 });
-
-export type SendEmail = z.infer<typeof SendEmailSchema>;

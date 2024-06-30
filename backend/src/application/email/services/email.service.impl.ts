@@ -1,11 +1,10 @@
-import { EmailService } from "@domain/email";
-import { SendEmailDTO } from "../dtos/send-email.dto";
+import { EmailService, SendEmailDto } from "@domain/email";
 import { EmailClient } from "@infrastructure/email";
 
 export class EmailServiceImpl implements EmailService {
   constructor(private readonly emailClient: EmailClient) {}
 
-  async send(dto: SendEmailDTO): Promise<void> {
+  async send(dto: SendEmailDto): Promise<void> {
     return await this.emailClient.send(dto);
   }
 }

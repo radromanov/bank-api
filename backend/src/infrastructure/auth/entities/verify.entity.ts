@@ -1,6 +1,8 @@
 import { Entity } from "@domain/core";
+import { makeDate, makeId } from "@shared/utils";
 
-export interface VerifyEntity extends Entity {
-  otp: string;
-  token: string;
+export class VerifyEntity extends Entity {
+  constructor(public otp: string, public token: string) {
+    super(makeId, makeDate);
+  }
 }

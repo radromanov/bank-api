@@ -1,5 +1,5 @@
-import { SendEmailDTO } from "@application/email";
+import { SendEmailDto } from "@domain/email";
 
 export interface EmailClient {
-  send(dto: SendEmailDTO): Promise<void>;
+  send(dto: SendEmailDto): Promise<void>;
 }

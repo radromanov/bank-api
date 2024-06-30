@@ -1,4 +1,4 @@
-export * from "./auth.service";
+export * from "./services/auth.service";
 
 export * from "./dtos/login.dto";
 export * from "./dtos/register.dto";

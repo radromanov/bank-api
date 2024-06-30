@@ -1,7 +1,7 @@
 import { createTransport, getTestMessageUrl } from "nodemailer";
 import { EmailClient } from "../email-client";
-import { SendEmailDTO } from "@application/email";
 import { NodemailerConfig } from "@config/nodemailer.config";
+import { SendEmailDto } from "@domain/email";
 
 export class NodemailerClient implements EmailClient {
   private host: string;
@@ -29,7 +29,7 @@ export class NodemailerClient implements EmailClient {
     });
   }
 
-  async send(dto: SendEmailDTO): Promise<void> {
+  async send(dto: SendEmailDto): Promise<void> {
     const { sender, recipient, subject, body } = dto;
     const transport = this.init();
 

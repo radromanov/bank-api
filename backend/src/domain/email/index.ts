@@ -1,2 +1,5 @@
-export * from "./email.service";
-export * from "./email.schema";
+export * from "./services/email.service";
+
+export * from "./dtos/send-email.dto";
+
+export * from "./schemas/send-email.schema";

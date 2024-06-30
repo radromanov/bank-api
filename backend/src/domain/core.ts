@@ -1,10 +1,16 @@
 import z from "zod";
 import { ApiError } from "@shared/utils";
 
-export interface Entity {
+export class Entity {
   id: string;
   createdAt: Date;
   updatedAt: Date;
+
+  constructor(makeId: () => string, makeDate: () => Date) {
+    this.id = makeId();
+    this.createdAt = makeDate();
+    this.updatedAt = makeDate();
+  }
 }
 
 export abstract class Dto {

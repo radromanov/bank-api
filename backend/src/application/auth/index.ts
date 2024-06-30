@@ -1,4 +1,4 @@
-export * from "./auth.service.impl";
+export * from "./services/auth.service.impl";
 
 export * from "./use-cases/register.use-case";
 export * from "./use-cases/login.use-case";

@@ -1,12 +1,9 @@
-import { EmailService } from "@domain/email";
-import { SendEmailDTO } from "../dtos/send-email.dto";
+import { EmailService, SendEmailDto } from "@domain/email";
 
 export class SendEmailUseCase {
   constructor(private readonly emailService: EmailService) {}
 
-  async execute(dto: SendEmailDTO) {
-    console.log(dto);
-
+  async execute(dto: SendEmailDto) {
     return await this.emailService.send(dto);
   }
 }
